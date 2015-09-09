@@ -49,7 +49,7 @@ hold on
 maxpts = max(arrayfun(@(x) size(x.matrix, 1), tracks));
 for iTrk = 1:length(tracks)
     matrix = tracks(iTrk).matrix;
-    matrix(any(isnan(matrix(:,1:3)),2),:) = [];
+    matrix(any(isnan(matrix(:,1:3)),2),:) = [];%只要有纤维束中存在nan值,则抛弃这条纤维束。
     
     if strcmp(plottype, 'rainbow')
         cline(matrix(:,1), matrix(:,2), matrix(:,3), (0:(size(matrix, 1)-1))/(maxpts))

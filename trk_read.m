@@ -47,8 +47,8 @@ end
 if header.hdr_size~=1000, error('Header length is wrong'), end
 
 % Check orientation
-[tmp ix] = max(abs(header.image_orientation_patient(1:3)));
-[tmp iy] = max(abs(header.image_orientation_patient(4:6)));
+[tmp,ix] = max(abs(header.image_orientation_patient(1:3)));
+[tmp,iy] = max(abs(header.image_orientation_patient(4:6)));
 iz = 1:3;
 iz([ix iy]) = [];
 
