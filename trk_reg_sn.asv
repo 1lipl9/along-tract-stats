@@ -66,9 +66,6 @@ end
 
 header.dim        = sn.VF.dim(1:3);
 header.voxel_size = voxel_size;
-%这个地方需要注意一下，在spm中的头文件中的mat的第四列进行了操作，与原始的头文件
-%面的sform信息不一致。其转化关系是：
-%nii(:, 4) = sum(mat, 2);
 mat = sn.VF.mat;
 mat(:, 4) = sum(mat, 2);
 header.vox_to_ras = mat;
