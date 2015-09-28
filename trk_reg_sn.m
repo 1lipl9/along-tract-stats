@@ -62,6 +62,8 @@ for iTrk=1:length(tracks)
     vox = vox + [dat1(1:nPoints)', dat2(1:nPoints)', dat3(1:nPoints)'];
     
     tracks(iTrk).matrix(:, 1:3) = affine(vox, Mult).* repmat(voxel_size, nPoints, 1);
+    
+    clear('vox');
 end
 
 header.dim        = sn.VF.dim(1:3);
@@ -69,9 +71,12 @@ header.voxel_size = voxel_size;
 %这个地方需要注意一下，在spm中的头文件中的mat的第四列进行了操作，与原始的头文件
 %面的sform信息不一致。其转化关系是：
 %nii(:, 4) = sum(mat, 2);
+
+
 mat = sn.VF.mat;
 mat(:, 4) = sum(mat, 2);
 header.vox_to_ras = mat;
+header.image_orientation_patient = getIOP(sn.VF.fname);
 
 %==========================================================================
 % function Def = affine(y,M)
@@ -81,3 +86,23 @@ y_wld       = zeros(size(y_vox),'single');
 y_wld(:, 1) = y_vox(:, 1)*M(1, 1) + y_vox(:, 2)*M(1, 2) + y_vox(:, 3)*M(1, 3) + M(1, 4);
 y_wld(:, 2) = y_vox(:, 1)*M(2, 1) + y_vox(:, 2)*M(2, 2) + y_vox(:, 3)*M(2, 3) + M(2, 4);
 y_wld(:, 3) = y_vox(:, 1)*M(3, 1) + y_vox(:, 2)*M(3, 2) + y_vox(:, 3)*M(3, 3) + M(3, 4);
+
+%==========================================================================
+%function IOP = getIOP(fname)  
+%==========================================================================
+function IOP = getIOP(fname)
+nii = load_untouch_header_only(fname);
+
+b = nii.hist.quatern_b;
+c = nii.hist.quatern_c;
+d = nii.hist.quatern_d;
+
+a = sqrt(1 - sum([b, c, d].^2));
+
+R11 = a*a + b*b - c*c -d*d;
+R21 = 2*b*c + 2*a*d;
+R31 = 2*b*d - 2*a*c;
+R12 = 2*b*c - 2*a*d;
+R22 = a*a + c*c - b*b - d*d;
+R32 = 2*c*d + 2*a*b;
+IOP = [-R11, -R21, R31, -R12, -R22, R32];
