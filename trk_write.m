@@ -64,12 +64,12 @@ for iTrk = 1:header.n_count
     header.voxel_size = header.voxel_size([ix iy iz]);
     coords = tracks(iTrk).matrix(:,1:3);
     coords = coords(:,[ix iy iz]);
-    if header.image_orientation_patient(ix) < 0
-        coords(:,ix) = header.dim(ix)*header.voxel_size(ix) - coords(:,ix);
-    end
-    if (header.image_orientation_patient(3+iy) < 0 && strcmp(header.voxel_order, 'LPS'))
-        coords(:,iy) = header.dim(iy)*header.voxel_size(iy) - coords(:,iy);
-    end
+%     if header.image_orientation_patient(ix) < 0
+%         coords(:,ix) = header.dim(ix)*header.voxel_size(ix) - coords(:,ix);
+%     end
+%     if (header.image_orientation_patient(3+iy) < 0 && strcmp(header.voxel_order, 'LPS'))
+%         coords(:,iy) = header.dim(iy)*header.voxel_size(iy) - coords(:,iy);
+%     end
     tracks(iTrk).matrix(:,1:3) = coords;
     
     fwrite(fid, tracks(iTrk).nPoints, 'int');

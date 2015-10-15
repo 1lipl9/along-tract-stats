@@ -86,12 +86,12 @@ while iTrk <= max_n_trks
     %header.voxel_order to determine the truely orientation of the tracks.
     coords = tracks(iTrk).matrix(:,1:3);
     coords = coords(:,[ix iy iz]);
-    if header.image_orientation_patient(ix) < 0
-        coords(:,ix) = header.dim(ix)*header.voxel_size(ix) - coords(:,ix);
-    end
-    if (header.image_orientation_patient(3+iy) < 0 && strcmp(header.voxel_order, 'LPS'))
-        coords(:,iy) = header.dim(iy)*header.voxel_size(iy) - coords(:,iy);
-    end
+%     if header.image_orientation_patient(ix) < 0
+%         coords(:,ix) = header.dim(ix)*header.voxel_size(ix) - coords(:,ix);
+%     end
+%     if (header.image_orientation_patient(3+iy) < 0 && strcmp(header.voxel_order, 'LPS'))
+%         coords(:,iy) = header.dim(iy)*header.voxel_size(iy) - coords(:,iy);
+%     end
     tracks(iTrk).matrix(:,1:3) = coords;
 	iTrk = iTrk + 1;
 end
