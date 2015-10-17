@@ -72,7 +72,7 @@ tracks_new = tracks(index);
 %Update the header
 header_new = header;
 for iTrk = 1:numel(tracks_new)
-    code_property = prop_encode(tblB{iTrk, 1}. tblB{iTrk, 2});
+    code_property = prop_encode(tblB{iTrk, 1}, tblB{iTrk, 2});
     if isfield(tracks, 'props')
         tracks_new(iTrk).props = [tracks_new(iTrk).props code_property];
     else
@@ -81,6 +81,7 @@ for iTrk = 1:numel(tracks_new)
 end
 
 new_prop_names = 'label';
+header_new.n_count = numel(tracks_new);
 n_properties_old = header_new.n_properties;
 header_new.n_properties = n_properties_old + 1;
 header_new.property_name(n_properties_old + 1, 1:size(new_prop_names, 2)) = new_prop_names;
