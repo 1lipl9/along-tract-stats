@@ -1,4 +1,4 @@
-function [header_new, tracks_new] = trk_to_net(header, tracks, volume)
+function [] = trk_to_net(header, tracks, volume)
 %TRK_TO_NET - Generate the tracks to construct the network
 %
 % Syntax: trk_to_net(header, tracks, volume)
@@ -85,6 +85,7 @@ n_properties_old = header_new.n_properties;
 header_new.n_properties = n_properties_old + 1;
 header_new.property_name(n_properties_old + 1, 1:size(new_prop_names, 2)) = new_prop_names;
 
+trk_write(header_new, tracks_new, 'trk_tmp.trk'); %To generate the temp files for the next step, but will delete after be read.
 
 %----------------------------------------------------------
 %label the regions which the track linked
