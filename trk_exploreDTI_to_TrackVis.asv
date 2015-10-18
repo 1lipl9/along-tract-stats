@@ -14,6 +14,7 @@ function [] = trk_exploreDTI_to_TrackVis(nii, explore_trk, trkvis_trk_write)
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
 % Institute of High Energy Physics 
 % Sep 2015
+
 load(explore_trk, 'Tracts');
 header = trk_default_header;
 header.dim = nii.dime.dim(2:4);
