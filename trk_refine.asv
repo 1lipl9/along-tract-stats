@@ -1,7 +1,8 @@
-function [] = trk_to_net(header, tracks, volume)
-%TRK_TO_NET - Refine the tracks to construct the network
+function [] = trk_refine(header, tracks, volume)
+%TRK_REFINE - Refine the tracks connected two brain regions to construct 
+%the network
 %
-% Syntax: trk_to_net(header, tracks, volume)
+% Syntax: trk_refine(header, tracks, volume)
 %
 % Inputs:
 %    header   - Header information for .trk file [struc]

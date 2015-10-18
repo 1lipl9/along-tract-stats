@@ -6,14 +6,7 @@ function CM = trk_net_con(trkFileName, volume_sc, sc_name, outputFileName)
 %Inputs:
 %  trkFileName: the tmp file generated from trk_refine.m, default
 %  trk_tmp.trk
-%  volume_sc: scalar volume, such as FA, from spm_read_vols.you should keep
-%  in mind the scalar image should have the same voxel_order with the trk.
-%  sc_name: such as  'FA'
-%  outputFileName: the connection matrix to save in.
-%
-% Author: Shaofeng Duan (duansf@ihep.ac.cn)
-% Institute of High Energy Physics 
-% Oct 2015
+%  volume_sc: scalar volume, such as FA, from spm_read_vols
 
 trkFileName = 'trk_tmp.trk';
 [header, tracks] = trk_read(trkFileName);
