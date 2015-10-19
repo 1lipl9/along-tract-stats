@@ -2,18 +2,18 @@ function [] = trk_exploreDTI_to_TrackVis(nii, explore_trk, trkvis_trk_write)
 %TRK_EXPLOREDTI_TO_TRACKVIS convert trk fro exploreDTI to TrackVis 
 %  For exploreDTI is compatible with RAS(i, j, k) DTI volume, so you should
 %  reorient you DTI volume to RAS before you process it in exploreDTI.
-
-%  SYNTAX: TRK_EXPLOREDTI_TO_TRACKVIS(nii, explore_trk, trkvis_trk_write)
+%
+%  Syntax: TRK_EXPLOREDTI_TO_TRACKVIS(nii, explore_trk, trkvis_trk_write)
 %
 %  INPUTS:
 %    nii              - generate from load_untouch_header_only.m
 %    explore_trk      - the tract files with explore format you want to convert
 %    trkvis_trk_write - the path you want to save the converted file.
-%  see also: LOAD_UNTOUCH_HEAD_ONLY, TRK_READ, TRK_WRITE.
+%  see also: LOAD_UNTOUCH_HEADER_ONLY, TRK_READ, TRK_WRITE.
 %
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
 % Institute of High Energy Physics 
-% Sep 2015
+% Oct 2015
 load(explore_trk, 'Tracts');
 header = trk_default_header;
 header.dim = nii.dime.dim(2:4);

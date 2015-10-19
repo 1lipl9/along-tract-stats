@@ -1,16 +1,17 @@
-function [] = trk_refine(header, tracks, volume)
+function [] = trk_refine(header, tracks, volume, outputFileName)
 %TRK_REFINE - Refine the tracks connected two brain regions to construct 
 %the network
 %
-% Syntax: trk_refine(header, tracks, volume)
+% Syntax: trk_refine(header, tracks, volume, outputFileName)
 %
 % Inputs:
-%    header   - Header information for .trk file [struc]
-%    tracks   - Track data struc array [1 x nTracks]
-%      nPoints  - # of points in each track
-%      matrix   - XYZ coordinates (in mm) and associated scalars [nPoints x 3+nScalars]
-%      props    - Properties of the whole tract
-%    volume  -  The scalar image of AAL labels.
+%    header         - Header information for .trk file [struc]
+%    tracks         - Track data struc array [1 x nTracks]
+%    nPoints        - # of points in each track
+%    matrix         - XYZ coordinates (in mm) and associated scalars [nPoints x 3+nScalars]
+%    props          - Properties of the whole tract
+%    volume         -  The scalar image of AAL labels.
+%    outputFileName - the refined trk saved path.
 %
 % Output:
 %    The new header and tracks for .trk files
@@ -87,7 +88,7 @@ n_properties_old = header_new.n_properties;
 header_new.n_properties = n_properties_old + 1;
 header_new.property_name(n_properties_old + 1, 1:size(new_prop_names, 2)) = new_prop_names;
 
-trk_write(header_new, tracks_new, 'trk_tmp.trk'); %To generate the temp files for the next step, but will delete after be read.
+trk_write(header_new, tracks_new, outputFileName); %To generate the temp files for the next step, but will delete after be read.
 
 %----------------------------------------------------------
 %label the regions which the track linked

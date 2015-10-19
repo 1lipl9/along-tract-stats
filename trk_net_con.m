@@ -15,7 +15,7 @@ function CM = trk_net_con(trkFileName, volume_sc, sc_name, outputFileName)
 % Institute of High Energy Physics 
 % Oct 2015
 
-trkFileName = 'trk_tmp.trk';
+
 [header, tracks] = trk_read(trkFileName);
 
 [header, tracks] = trk_add_sc(header, tracks, volume_sc, sc_name);
