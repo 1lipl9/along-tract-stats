@@ -1,9 +1,10 @@
 function [header,tracks] = trk_reg_sn(header,tracks,sn_name)
 %TRK_REG_SN - used to registrit the tracks
 %you should ensure the max(abs(sn.VF.mat)) = [1, 2, 3];
+%Syntax: [header,tracks] = trk_reg_sn(header,tracks,sn_name)
 %Inputs
 %   sn_name - the file name of the deformation image.
-
+%
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
 % Institute of High Energy Physics 
 % Sep 2015
@@ -40,7 +41,7 @@ C2   = spm_diffeo('bsplinc',single(Cos(:, :, :, 2)),intrp);
 C3   = spm_diffeo('bsplinc',single(Cos(:, :, :, 3)),intrp);
 % dat = spm_diffeo('bsplins',C,Y,intrp);
 Mult = sn.Affine;%这是VG体素到VF的体素坐标对应关系。
-voxel_size = sqrt(sum(sn.VF.mat(1:3,1:3)).^2);
+voxel_size = sqrt(sum(sn.VF.mat(1:3,1:3).^2));
 for iTrk=1:length(tracks)
     % Translate continuous vertex coordinates into discrete voxel coordinates
     vox = tracks(iTrk).matrix(:,1:3) ./ repmat(header.voxel_size, tracks(iTrk).nPoints,1);
