@@ -25,7 +25,7 @@ Coef{3} = spm_bsplinc(res.Twarp(:,:,:,3),prm);
 
 M = M1\res.Affine*res.image(1).mat;%这是VG体素到VF的体素坐标对应关系。
 
-voxel_size = sqrt(sum(M1(1:3,1:3)).^2);
+voxel_size = sqrt(sum(M1(1:3,1:3).^2));
 for iTrk=1:length(tracks)
     % Translate continuous vertex coordinates into discrete voxel coordinates
     vox = tracks(iTrk).matrix(:,1:3) ./ repmat(header.voxel_size, tracks(iTrk).nPoints,1);
