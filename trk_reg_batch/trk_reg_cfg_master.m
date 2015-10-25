@@ -1,16 +1,15 @@
 function cfg = trk_reg_cfg_master
 
-
-temp = cfg_repeat;
-temp.name = 'track registration : write';
-temp.tag = 'tag_trk_reg';
-temp.values = {trk_reg_cfg_func};
-temp.forcestruct = true;
-temp.help = {'This app is used to implement the track registration.'};
+TrkReg = cfg_repeat;
+TrkReg.name = 'track registration : write';
+TrkReg.tag = 'tag_trk_reg';
+TrkReg.values = {trk_reg_sn_cfg_func, trk_reg_dtitk_cfg_func};
+TrkReg.forcestruct = true;
+TrkReg.help = {'This app is used to implement the track registration.'};
 
 cfg = cfg_repeat;
 cfg.name = 'track operation';
 cfg.tag = 'tag_trk_master';
-cfg.values = {temp};
+cfg.values = {TrkReg};
 cfg.forcestruct = true;
 cfg.help = {'This app is used for track operation.'};

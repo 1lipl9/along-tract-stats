@@ -1,4 +1,4 @@
-function out = trk_reg_cfg_run_func(job)
+function out = trk_reg_sn_cfg_run_func(job)
 
 trkFiles  = job.tag_trk;
 snFiles   = job.tag_sn;
