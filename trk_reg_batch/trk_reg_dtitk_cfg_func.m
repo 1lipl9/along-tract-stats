@@ -43,7 +43,7 @@ input6.help    = {'template image in dtitk'};
 
 trk_reg_cfg       = cfg_exbranch;
 trk_reg_cfg.name  = 'dtitk edition';
-trk_reg_cfg.tag   = 'trk_set_tag';
+trk_reg_cfg.tag   = 'trk_set_dtitk_tag';
 trk_reg_cfg.val   = {input1, input2, input3, input4, input5, input6};
 trk_reg_cfg.prog  = @trk_reg_dtitk_cfg_run_func;
 trk_reg_cfg.vout  = @trk_reg_dtitk_cfg_vout_func;

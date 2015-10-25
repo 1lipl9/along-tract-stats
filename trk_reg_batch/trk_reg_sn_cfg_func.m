@@ -22,7 +22,7 @@ input3.help    = {'the prefix of the output file'};
 
 trk_reg_cfg       = cfg_exbranch;
 trk_reg_cfg.name  = 'sn edition';
-trk_reg_cfg.tag   = 'trk_set_tag';
+trk_reg_cfg.tag   = 'trk_set_sn_tag';
 trk_reg_cfg.val   = {input1, input2, input3};
 trk_reg_cfg.prog  = @trk_reg_sn_cfg_run_func;
 trk_reg_cfg.vout  = @trk_reg_sn_cfg_vout_func;
