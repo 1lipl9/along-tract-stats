@@ -62,7 +62,7 @@ for iTrk=1:length(tracks)
     
     %利用非线性变形场刷新vox
     vox = vox + [dat1(1:nPoints)', dat2(1:nPoints)', dat3(1:nPoints)'] ./ ...
-        repmat([scale_x, scale_y, scale_z], nPoints, 1);
+        repmat([scale_x, scale_y, scale_z], nPoints, 1); %经验证，这个地方应该是+号
     
     tracks(iTrk).matrix(:, 1:3) = affine(vox, Mult).* repmat(voxel_size, nPoints, 1);
     

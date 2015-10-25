@@ -18,7 +18,7 @@ function CM = trk_net_con(trkFileName, volume_sc, sc_name, outputFileName)
 
 [header, tracks] = trk_read(trkFileName);
 
-[header, tracks] = trk_add_sc(header, tracks, volume_sc, sc_name);
+[~, tracks] = trk_add_sc(header, tracks, volume_sc, sc_name);
 
 netCell  = cell(90); %cell to store the edge data
 for iTrk = 1:numel(tracks)
