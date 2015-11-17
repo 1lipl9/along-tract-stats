@@ -1,0 +1,22 @@
+function trk_exDTI_to_TrkVis_cfg_func
+
+input1 = cfg_files;
+input1.name = 'nii file';
+input1.tag = 'ex2trk_nii';
+input1.filter = {'image'};
+input1.num = [1, 1];
+input1.help = {'input a path of a nii files of the tracks'};
+
+input2 = cfg_files;
+input2.name = 'exploreDTI tracks';
+input2.tag = 'ex2trk_extrk';
+input2.filter = {'mat'};
+input2.help = {'choose the exploreDTI output trk mat files'};
+
+input3 = cfg_entry;
+input3.name = 'the output trk name';
+input3.tag = 'ex2trk_outputName';
+input3.strtype = 's';
+input3.help = {'input t'};
+
+
