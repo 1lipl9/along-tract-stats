@@ -42,8 +42,8 @@ if nargin < 2, tiePoint = []; end
 
 if isstruct(tracks_in) % Structure --> matrix
     nPoints = [tracks_in.nPoints];
-    [maxPoints ind] = max(nPoints);
-    tracks_out = nan(maxPoints, size(tracks_in(1).matrix, 2), length(tracks_in));
+    [maxPoints, ind] = max(nPoints);
+    tracks_out = nan(maxPoints, size(tracks_in(1).matrix, 2), length(tracks_in)); %以最多的点创建矩阵
     if length(unique(nPoints))~=1
         
         % If there is a tiePoint given, center the streamlines on this point
