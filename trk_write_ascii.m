@@ -23,7 +23,7 @@ function trk_write_ascii(header,tracks,savePath)
 %    tracks_interp           = trk_flip(header, tracks_interp, [97 110 4]);
 %    tracks_interp_str       = trk_restruc(tracks_interp);
 %    [header_sc tracks_sc]   = trk_add_sc(header, tracks_interp_str, volume, 'FA');
-%    trk_write_ascii(tracks_sc, 'streamlines.txt')
+%    trk_write_ascii(header_sc, tracks_sc, 'streamlines.txt')
 %
 % Other m-files required: join.m
 % Subfunctions: none
