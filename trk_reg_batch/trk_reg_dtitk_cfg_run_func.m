@@ -20,7 +20,7 @@ out             = cell(size(TrkFiles));
 for aa = 1:numel(TrkFiles)
     TrkFile           = TrkFiles{aa};
     [path, name, ext] = spm_fileparts(TrkFile);
-    trkFileToSave     = fullfile(path, [preName, '_', name, '.', ext]);  
+    trkFileToSave     = fullfile(path, [preName, '_', name, ext]);  
     out{aa}           = trkFileToSave;
     
     [header, tracks] = trk_read(TrkFile);
