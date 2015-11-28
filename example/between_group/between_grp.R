@@ -1,5 +1,5 @@
-exptDir = '/path/to/along-tract-stats/example/between_group'
-grpLabs = c('Control', 'FASD')
+exptDir = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
+grpLabs = c('Control', 'SDCP')
 thresh  = 0.05
 nPerms  = 100
 
@@ -53,6 +53,7 @@ models$tTable = ddply(trk_data, c("Tract", "Hemisphere"), fit_trk_model2)
 # Add weights=varFunc(~I(1/SD^2)) to do weighted fitting
 
 # Model number of streamlines
+
 summary(lm(Streamlines ~ Group + Hemisphere + Tract, data=trk_props_long))
 
 ################################################################################

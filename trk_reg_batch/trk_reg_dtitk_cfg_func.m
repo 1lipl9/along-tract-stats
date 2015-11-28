@@ -10,7 +10,7 @@ input2         = cfg_files;
 input2.name    = '_aff file';
 input2.tag     = 'tag_aff';
 input2.num     = [1, 1];
-input2.filter  = {'.aff'};
+input2.filter  = {'aff$'};
 input2.help    = {'choose the _aff file used to registrate the trk.'};
 
 input3         = cfg_entry;

@@ -1,5 +1,5 @@
-exDir    = '/path/to/along-tract-stats/example'
-subID    = 'subject1'
+exDir    = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
+subID    = 'chenchaofan'
 trk_info = read.table(file.path(exDir, 'tract_info.txt'), header=T, sep='\t')
 trk_avgs = read.table(file.path(exDir, 'trk_avgs.txt'), header=T, sep='\t')
 
@@ -24,7 +24,7 @@ for(iTrk in 1:nrow(trk_info)){
     # Plot each streamline (FA vs. position)
     # Address overplotting with alpha and a slight x-position jitter
     scale     = 100/(max(as.numeric(single_sub$Point))-1)
-    p = ggplot(single_sub, aes(x=(as.numeric(Point)-1)*scale, y=FA, group=Streamline)) + geom_line(alpha=0.01, position='jitter', width=0.01)
+    p = ggplot(single_sub, aes(x=(as.numeric(Point)-1)*scale, y=FA, group=Streamline)) + geom_line(alpha=0.1, position='jitter', width=0.01)
     
     # Overlay along-tract mean FA ± SD
     get_band <- function(y.in){
