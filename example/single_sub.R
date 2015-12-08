@@ -1,5 +1,5 @@
 exDir    = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
-subID    = 'chenchaofan'
+subID    = 'dijingkun'
 trk_info = read.table(file.path(exDir, 'tract_info.txt'), header=T, sep='\t')
 trk_avgs = read.table(file.path(exDir, 'trk_avgs.txt'), header=T, sep='\t')
 

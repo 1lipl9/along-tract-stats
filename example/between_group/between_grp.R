@@ -1,5 +1,5 @@
 exptDir = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
-grpLabs = c('Control', 'SDCP')
+grpLabs = c('SDCP', 'Control')
 thresh  = 0.05
 nPerms  = 100
 
@@ -54,7 +54,7 @@ models$tTable = ddply(trk_data, c("Tract", "Hemisphere"), fit_trk_model2)
 
 # Model number of streamlines
 
-summary(lm(Streamlines ~ Group + Hemisphere + Tract, data=trk_props_long))
+#summary(lm(Streamlines ~ Group + Hemisphere + Tract, data=trk_props_long))
 
 ################################################################################
 # Permutation testing
