@@ -1,7 +1,7 @@
-exDir    = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
-subID    = 'dijingkun'
+exDir    = 'G:/Matlab/track_reg/CSTanalysis/sym/template/example'
+subID    = 'subj1'
 trk_info = read.table(file.path(exDir, 'tract_info.txt'), header=T, sep='\t')
-trk_avgs = read.table(file.path(exDir, 'trk_avgs.txt'), header=T, sep='\t')
+trk_avgs = read.table(file.path(exDir, 'tract_avgs.txt'), header=T, sep='\t')
 
 library(ggplot2)
 
