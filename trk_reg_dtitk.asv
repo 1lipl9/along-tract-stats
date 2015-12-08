@@ -60,9 +60,7 @@ for iTrk=1:length(tracks)
     dat2 = spm_diffeo('bsplins',C2,single(cat(4, X_trk, Y_trk, Z_trk)),intrp);
     dat3 = spm_diffeo('bsplins',C3,single(cat(4, X_trk, Y_trk, Z_trk)),intrp);
     
-    dat1(isnan(dat1)) = 0;
-    dat2(isnan(dat2)) = 0;
-    dat3(isnan(dat3)) = 0;
+    dat1(isnan(dat1)) = 
     
     %利用非线性变形场刷新vox
     vox = vox + [dat1(1:nPoints)', dat2(1:nPoints)', dat3(1:nPoints)'] ./ ...

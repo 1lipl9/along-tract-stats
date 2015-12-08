@@ -9,7 +9,7 @@ function trk_complie_data_spm_demo
 %Nov 2015
 
 oldPath = pwd;
-exDir = uigetdir('E:\dsf\Documents');
+exDir = uigetdir('');
 cd(exDir)
 dirList = dir(fullfile(exDir, '*'));
 dirList(~[dirList.isdir]) = [];
