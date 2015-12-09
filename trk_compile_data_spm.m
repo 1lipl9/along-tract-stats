@@ -142,6 +142,7 @@ for iTrk=1:length(tract_info)
             tracks_interp_str = trk_restruc(tracks_interp);
             
             % Extract scalar values from 'volume'
+            [header, tracks_interp_str] = trk_adjust_margin(header, tracks_interp_str);
             [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'FA');
             
             % Determine the mean scalar at each cross section along the tract group
