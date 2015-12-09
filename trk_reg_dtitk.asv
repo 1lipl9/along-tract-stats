@@ -71,10 +71,9 @@ for iTrk=1:length(tracks)
     tracks(iTrk).matrix(:, 1:3) = affine(vox, Mult).* repmat(voxel_size, nPoints, 1);
     
     %配准之后会出现超出体素范围的体素出现，所以要进行一定的修改。而且一般出现在z轴上，所有对z轴进行一定的修改
-%     coords = tracks(iTrk).matrix(:, 3);
-%     coords(coords <= 0) = 0.1;
-%     coords(coords > voxel_size(3)*VF.dim(3)) = voxel_size(3)*VF.dim(3);
-%     tracks(iTrk).matrix(:, 3) = coords;
+    coords = tracks(iTrk).matrix(:, 3);
+    coords(coords <= 0) = 0.1;
+    coords(coords > voxel_size(3)*
     
     clear('vox');
 end

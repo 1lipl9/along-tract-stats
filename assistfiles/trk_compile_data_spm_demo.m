@@ -1,4 +1,4 @@
-function trk_complie_data_spm_demo
+function trk_compile_data_spm_demo
 %TRK_COMPILE_DATA_SPM_DEMO - a simple example that does group-wise
 %analysis.
 %
