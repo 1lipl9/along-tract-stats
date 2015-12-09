@@ -1,30 +1,23 @@
-function trk_adjust_margin
+function [header, tracks] = trk_adjust_margin(header, tracks)
 %TRK_ADJUST_MARGIN - adjust the tracks' margin along the z-axis
 %
-%Syntax: TRK_ADJUST_MARGIN
+%Syntax: [header, tracks] = TRK_ADJUST_MARGIN(header, tracks)
 %
+% Inputs:
+%    header - Header information from .trk file [struc]
+%    tracks - Track data struc array [1 x nTracks]
 %
-%See also: TRK_REG_DTITK
+%See also: TRK_READ
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
 % Institute of High Energy Physics 
 % Dec 2015
 
-trkNames = spm_select(Inf, 'trk$', 'choose the trk want to adjust the margin');
-trkNames = cellstr(trkNames);
+VoxSize = header.voxel_size(3);
+ImgDim = header.dim(3);
 
-h = waitbar(0, 'processing the tracks...');
-for aa = 1:numel(trkNames)
-    [header, tracks] = trk_read(trkNames{aa});
-    VoxSize = header.voxel_size;
-    ImgDim = header.dim;
-    
-    for bb = 1:numel(tracks)
-        coords = tracks(bb).matrix(:, 3);
-        coords(coords <= 0) = 0.1;
-        coords(coords > VoxSize*ImgDim) = VoxSize*ImgDim;
-        tracks(bb).matrix(:, 3) = coords;
-    end
-    trk_write(header, tracks, trkNames{aa});
-    waitbar(aa/(numel(trkNames)), h);
+for bb = 1:numel(tracks)
+    coords = tracks(bb).matrix(:, 3);
+    coords(coords <= 0) = 0.1;
+    coords(coords > VoxSize*ImgDim) = VoxSize*ImgDim;
+    tracks(bb).matrix(:, 3) = coords;
 end
-close(h);
