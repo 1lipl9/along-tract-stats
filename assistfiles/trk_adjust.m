@@ -30,7 +30,7 @@ end
 % the follow parts is to adjust the x-axis coordinates.
 % for iTrk = 1:numel(tracks)  
 %     coords = tracks(iTrk).matrix(:,1:3);
-%     coords(:, 1) = coords(:, 1) - 2*header.voxel_size(1); % translate along x-axis
+% %     coords(:, 1) = coords(:, 1) - 2*header.voxel_size(1); % translate along x-axis
 %     coords(:, 1) = header.dim(1)*header.voxel_size(1) - coords(:,1); % flip left-right.
 %     tracks(iTrk).matrix(:,1:3) = coords;
 % end

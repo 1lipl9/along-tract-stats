@@ -1,5 +1,5 @@
-exDir    = 'G:/Matlab/track_reg/CSTanalysis/sym/template/example'
-subID    = 'subj1'
+exDir    = 'G:/Matlab/track_reg/CSTanalysis/sym/template/example/multi'
+subID    = 'zhengwenting'
 trk_info = read.table(file.path(exDir, 'tract_info.txt'), header=T, sep='\t')
 trk_avgs = read.table(file.path(exDir, 'tract_avgs.txt'), header=T, sep='\t')
 
@@ -24,7 +24,8 @@ for(iTrk in 1:nrow(trk_info)){
     # Plot each streamline (FA vs. position)
     # Address overplotting with alpha and a slight x-position jitter
     scale     = 100/(max(as.numeric(single_sub$Point))-1)
-    p = ggplot(single_sub, aes(x=(as.numeric(Point)-1)*scale, y=FA, group=Streamline)) + geom_line(alpha=0.1, position='jitter', width=0.01)
+    p = ggplot(single_sub, aes(x=(as.numeric(Point)-1)*scale, y=FA, group=Streamline)) + 
+      geom_line(alpha=0.1, position='jitter', width=0.01)
     
     # Overlay along-tract mean FA ± SD
     get_band <- function(y.in){
@@ -32,7 +33,8 @@ for(iTrk in 1:nrow(trk_info)){
         ymin = mean(y.in)-sd(y.in)
         data.frame(ymax,ymin)
     }
-    means = c(stat_summary(aes(group=1), fun.y=mean, geom='line', color='blue'), stat_summary(aes(group=1), geom='ribbon', fun.data=get_band, color=0, fill='blue', alpha=0.2))
+    means = c(stat_summary(aes(group=1), fun.y=mean, geom='line', color='blue'), 
+              stat_summary(aes(group=1), geom='ribbon', fun.data=get_band, color=0, fill='blue', alpha=0.2))
     
     # Overlay tract-averaged mean FA ± SD
     fa.avg = trk_avgs$Mean.FA[iTrk]
