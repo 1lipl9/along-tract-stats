@@ -32,3 +32,30 @@ corTest <- function(df) {
   
   corr.test(df, use = 'complete')
 }
+
+plotFunc <- function(trk_data) {
+  # the data is casted to do the corr analysis
+  trk_data_melt <- select(trk_data, one_of(c('Point', 'ID', 'FA')))
+  colnames(trk_data_melt)[3] <- 'Value'
+  trk_data_cast <- dcast(trk_data_melt, Point~ID)
+  
+  varaa <- as.matrix(trk_data_cast[, -1])
+  varbb <- corr.test(varaa)
+  print(varbb)
+  
+  ########
+  # # Plot FA vs. position, conditioned on hemisphere, tract, and group
+  p3 <- ggplot(data = trk_data, aes(x = Position, y = FA))
+  p3 <- p3 + geom_line(aes(group = ID, color = Group), alpha = 0.3) + xlab('Position along tract (%)') 
+  p3 <- p3 + geom_smooth(aes(group = Group, color = Group))
+  
+  # p3 <- p3 + geom_area(aes(group = 1, xmin = 60, xmax = 70, ymin = 0, ymax = 1), fill = 'red') + theme_rect(alpha = 0.2)
+  dev.new(width = 7, height = 4)
+  print(p3)
+  
+  dev.new()
+  corrgram(trk_data_cast[,-1], lower.panel = panel.pie, 
+           upper.panel = panel.pts,
+           text.panel = panel.txt, 
+           main = 'The CST_R FA profiles\' correlation')
+}

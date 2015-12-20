@@ -1,4 +1,4 @@
-exptDir = 'G:/Matlab/track_reg/CSTanalysis/_alongtrackanalysis'
+exptDir = 'G:/Matlab/track_reg/CSTanalysis/sym/template/example/multi'
 grpLabs = c('SDCP', 'Control')
 thresh  = 0.05
 nPerms  = 100
@@ -42,31 +42,8 @@ models$anova = ddply(trk_data, c("Tract", "Hemisphere"), fit_trk_model1)
 
 models$tTable = ddply(trk_data, c("Tract", "Hemisphere"), fit_trk_model2)
 
+ddply(trk_data, c("Tract", "Hemisphere"), plotFunc)
 
-# the data is casted to do the corr analysis
-trk_data_melt <- select(trk_data, one_of(c('Point', 'ID', 'FA')))
-colnames(trk_data_melt)[3] <- 'Value'
-trk_data_cast <- dcast(trk_data_melt, Point~ID)
-
-varaa <- as.matrix(trk_data_cast[, -1])
-varbb <- corr.test(varaa)
-print(varbb)
-
-########
-# # Plot FA vs. position, conditioned on hemisphere, tract, and group
-p3 <- ggplot(data = trk_data, aes(x = Position, y = FA))
-p3 <- p3 + geom_line(aes(group = ID, color = Group), alpha = 0.3) + xlab('Position along tract (%)') 
-p3 <- p3 + geom_smooth(aes(group = Group, color = Group))
-
-# p3 <- p3 + geom_area(aes(group = 1, xmin = 60, xmax = 70, ymin = 0, ymax = 1), fill = 'red') + theme_rect(alpha = 0.2)
-dev.new(width = 7, height = 4)
-print(p3)
-
-dev.new()
-corrgram(trk_data_cast[,-1], lower.panel = panel.pie, 
-         upper.panel = panel.pts,
-         text.panel = panel.txt, 
-         main = 'The CST_R FA profiles\' correlation')
 
 # p3        = qplot(Position, FA, group=ID, colour=Group, size=Streamlines, 
 #                   alpha=I(0.3), data=trk_data, facets = Tract~Hemisphere, 
