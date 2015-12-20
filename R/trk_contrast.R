@@ -8,6 +8,7 @@ subname = 'chengyuqi'
 expFile <- file.path(exptDir, subname, 'resample/FA.txt')
 regFile <- file.path(exptDir, subname, 'resample', 
                      paste(subname, '.txt', sep = ''))
+verticesNum <- 51
 
 df_explore <- read.table(expFile, sep = '\t')
 df_explore <- melt(df_explore, id = 'V1')
@@ -17,8 +18,8 @@ df_explore <- arrange(df_explore, V1)
 df_reg <- read.table(regFile, header = T, sep = '\t')
 
 new_df <- data.frame(FA_reg = df_reg$FA, FA_exp = df_explore$FA)
-new_df$Point <- c(1:51)
-new_df$Hemisphere <- rep(c('L', 'R'), c(51, 51))
+new_df$Point <- c(1:verticesNum)
+new_df$Hemisphere <- rep(c('L', 'R'), c(verticesNum, verticesNum))
 
 
 myfunc <- function(df) {
