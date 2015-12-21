@@ -8,7 +8,8 @@ function dice = trk_compare_dice(trkName1, trkName2)
 %    trkName2 - the second tract to caculate
 %
 %  Outputs:
-%    dice - the dice value, caculated by the formula :Dice = 2*(intersect(V1, V2)/union(V1, V2))
+%    dice - the dice value, caculated by the formula :
+%        Dice = 2*numel(intersect(V1, V2)/(numel(V1) + numel(V2))
 %
 %See also: TRK_READ, SPM_VOL
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
@@ -37,4 +38,4 @@ for iTrk = 1:numel(tracks2)
     ind2                = union(sub2ind(header2.dim, vox(:,1), vox(:,2), vox(:,3)), ind2);
 end
 
-dice = numel(intersect(ind1, ind2))/numel(union(ind1, ind2));
+dice = 2*numel(intersect(ind1, ind2))/(numel(ind1) + numel(ind2));
