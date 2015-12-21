@@ -3,12 +3,11 @@ library('dplyr')
 library('reshape2')
 
 exptDir = 'G:/Matlab/track_reg/CSTanalysis/AAAmatfiles/segment'
-subname = 'chengyuqi'
+subname = 'dijingkun'
 
 expFile <- file.path(exptDir, subname, 'resample/FA.txt')
 regFile <- file.path(exptDir, subname, 'resample', 
                      paste(subname, '.txt', sep = ''))
-verticesNum <- 51
 
 df_explore <- read.table(expFile, sep = '\t')
 df_explore <- melt(df_explore, id = 'V1')
@@ -16,6 +15,7 @@ names(df_explore)[3] <- 'FA'
 df_explore <- arrange(df_explore, V1)
 
 df_reg <- read.table(regFile, header = T, sep = '\t')
+verticesNum <- nrow(df_reg)/2  #the number of the vertices on the mean tract.
 
 new_df <- data.frame(FA_reg = df_reg$FA, FA_exp = df_explore$FA)
 new_df$Point <- c(1:verticesNum)
