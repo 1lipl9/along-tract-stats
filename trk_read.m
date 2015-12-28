@@ -34,6 +34,9 @@ function [header,tracks] = trk_read(filePath)
 % Mar 2010
 
 % Parse in header
+if nargin < 1
+    filePath = spm_select(1, 'trk$', 'Select a trk file ...');
+end
 fid    = fopen(filePath, 'r');
 header = get_header(fid);
 
