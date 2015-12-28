@@ -21,7 +21,7 @@ function dice = trk_compare_dice(trkName1, trkName2)
 [header2, tracks2] = trk_read(trkName2);
 
 if ~(all(header1.dim == header2.dim) && all(header2.voxel_size == header2.voxel_size) ...
-        && all(all(header1.vox_to_ras == header2.vox_to_ras)))
+        && all(all(header1.voxel_order == header2.voxel_order)))
     error('%s is not compatible with %s', trkName1, trkName2);
 end
 
