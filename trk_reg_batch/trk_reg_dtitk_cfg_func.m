@@ -47,7 +47,8 @@ trk_reg_cfg.tag   = 'trk_set_dtitk_tag';
 trk_reg_cfg.val   = {input1, input2, input3, input4, input5, input6};
 trk_reg_cfg.prog  = @trk_reg_dtitk_cfg_run_func;
 trk_reg_cfg.vout  = @trk_reg_dtitk_cfg_vout_func;
-trk_reg_cfg.help  = {'this is the trk reg setting files used to reg the trks.'};
+trk_reg_cfg.help  = {'this is the trk reg setting files used to reg the trks.', ...
+    'YOU must make sure the trk and VF have the same sform'};
 
 function vout = trk_reg_dtitk_cfg_vout_func(job)
 
