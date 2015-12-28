@@ -4,22 +4,27 @@ function [header,tracks] = trk_reg_dtitk(header,tracks, aff_filename, diffeo_vol
 %
 %Syntax: [header,tracks] = TRK_REG_DTITK(header,tracks, aff_filename, diffeo_vol, VF, VG)
 %
-%Inputs
-%  header, tracks - the result of the trk_read.m
-%  aff_filename   - the name of *.aff file generated from the DTI_TK
-%  dti_reg_affine
-%  diffeo_vol     - spm_vol('*_aff_diffeo.df.nii')
-%  VF             - spm_vol(<source of DTI_TK>)
-%  VG             - spm_vol(<template of DTI_TK>)
+%  Inputs
+%    header, tracks - the result of the trk_read.m, ensure the trk files
+%    voxel_order is RAS, so that it can be compatible with the DTITK.
+%    aff_filename   - the name of *.aff file generated from the DTI_TK
+%    dti_reg_affine
+%    diffeo_vol     - spm_vol('*_aff_diffeo.df.nii')
+%    VF             - spm_vol(<source of DTI_TK>)
+%    VG             - spm_vol(<template of DTI_TK>)
 %
-%Example:
-%  [header, tracks] = trk_read('trk.trk');
-%  aff_filename     = '*.aff';
-%  diffeo_vol       = spm_vol('*_aff_diffeo.df.nii');
-%  VF               = spm_vol('VFfilename.nii');
-%  VG               = spm_vol('VGfilename.nii');
-%  [header, tracks] = TRK_REG_DTITK(header,tracks, aff_filename,
-%  diffeo_vol, VF, VG);
+%  Outputs
+%    header - all information about the voxel, such as dim, voxel_size, vox_to_ras, 
+%      image_orientation_patient, obtained from the VF. 
+%
+%  Example:
+%    [header, tracks] = trk_read('trk.trk');
+%    aff_filename     = '*.aff';
+%    diffeo_vol       = spm_vol('*_aff_diffeo.df.nii');
+%    VF               = spm_vol('VFfilename.nii');
+%    VG               = spm_vol('VGfilename.nii');
+%    [header, tracks] = TRK_REG_DTITK(header,tracks, aff_filename,
+%    diffeo_vol, VF, VG);
 %
 %See also: TRK_READ, SPM_VOL
 % Author: Shaofeng Duan (duansf@ihep.ac.cn)
