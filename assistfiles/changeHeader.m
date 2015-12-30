@@ -6,7 +6,7 @@ dwiFileNames = cellstr(dwiFileNames);
 
 for iTrkFile = 1:numel(trkFileNames)
     trkFileName = trkFileNames{iTrkFile};
-    nii = load_untouch_header_only(dwiFileNames{iTrkFile});
+    nii = load_untouch_header_only(dwiFileNames{1});
     [path, tit, ext] = fileparts(trkFileName);
     [header, tracks] = trk_read(trkFileName);
     header.dim = nii.dime.dim(2:4);

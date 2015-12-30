@@ -50,7 +50,7 @@ Mult = mat_VF\get_affine_dtitk(aff_filename)*mat_VG;
 voxel_size = sqrt(sum(VF.mat(1:3,1:3).^2));
 for iTrk=1:length(tracks)
     % Translate continuous vertex coordinates into discrete voxel coordinates
-    vox = tracks(iTrk).matrix(:,1:3) ./ repmat(header.voxel_size, tracks(iTrk).nPoints,1);
+    vox = tracks(iTrk).matrix(:,1:3);
     
     % Index into volume to extract scalar values
     nPoints = size(tracks(iTrk).matrix,1);
@@ -72,6 +72,7 @@ for iTrk=1:length(tracks)
     %利用非线性变形场刷新vox
     vox = vox + [dat1(1:nPoints)', dat2(1:nPoints)', dat3(1:nPoints)'] ./ ...
         repmat([scale_x, scale_y, scale_z], nPoints, 1); %经验证，这个地方应该是+号
+    vox = vox ./ repmat(header.voxel_size, tracks(iTrk).nPoints,1);
     
     tracks(iTrk).matrix(:, 1:3) = affine(vox, Mult).* repmat(voxel_size, nPoints, 1);
     
