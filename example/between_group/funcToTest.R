@@ -4,19 +4,9 @@ library(dplyr)         # Data manipulation
 library(RColorBrewer) # Color tables
 library(psych)
 
-fit_trk_model1 <- function(df){
-  lme.trk = lme(FA ~ Point*Group, data=df, random = ~ 1 | ID, na.action=na.omit)
-  data.frame(Term = rownames(anova(lme.trk)), anova(lme.trk))
-}
-
-fit_trk_model2 <- function(df){
-  lme.trk = tryCatch(lme(FA ~ Point/Group - 1, data=df, random = ~ 1 | ID, na.action=na.omit), error = function(e) data.frame())
-  if(length(lme.trk)!=0){
-    term.RE = paste('Point[0-9]+:', 'Group', '.+', sep='')
-    term.rows = grep(term.RE, row.names(summary(lme.trk)$tTable))
-    data.frame(Point = as.numeric(levels(factor(df$Point))),
-               summary(lme.trk)$tTable[term.rows,])
-  } else data.frame()
+aov_trk_model <- function(df){
+  fitValue <- aov(FA ~ Hemispere*Group + Error(ID), df)
+  ### Herein need some other codes.
 }
 
 getP <- function(testT, maxT){
@@ -26,13 +16,23 @@ getP <- function(testT, maxT){
 }
 
 corTest <- function(df) {
-  if(~is.matrix(df)) {
-    df <- as.matrix(df)
-  }
-  
-  corr.test(df, use = 'complete')
+  new_df <- df %>% arrange(Hemisphere, Point)
+  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), FA),
+                           R = select(filter(new_df, Hemisphere == 'R'), FA))
+  names(new_new_df) <- c('L', 'R')
+  rValueMat = corr.test(new_new_df)
+  rValue = rValueMat$r[1,2]
+  data.frame(rValue = rValue, Group = unique(df$Group))
 }
 
+FDCalc <- function(df) {
+  new_df <- df %>% arrange(Hemisphere, Point)
+  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), FA),
+                      R = select(filter(new_df, Hemisphere == 'R'), FA))
+  names(new_new_df) <- c('L', 'R')
+  FDValue = transmute(new_new_df, FD = sum(abs(L-R))/nrow(new_new_df))[1, ]
+  data.frame(FDValue = FDValue, Group = unique(df$Group))
+}
 plotFunc <- function(trk_data) {
   # the data is casted to do the corr analysis
   trk_data_melt <- select(trk_data, one_of(c('Point', 'ID', 'FA')))
