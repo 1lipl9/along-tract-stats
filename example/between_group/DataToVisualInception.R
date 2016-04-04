@@ -35,8 +35,9 @@ trk_data              = merge(trk_data, trk_props_long)
 myPlot <- function(dt) {
   label = dt$ID[1]
   p <- ggplot(aes(x = Point, y = FA), data = dt)
-  p <- p + geom_line(aes(color = Hemisphere, group = Hemisphere)) + 
-    annotate("text", x = 20, y = 0.5, label = label)
+  p <- p + geom_line(aes(color = Hemisphere, group = Hemisphere)) +
+    ylim(0, 1) + annotate("text", x = 20, y = 0.5, label = label) + 
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
   print(p)
 }
 
