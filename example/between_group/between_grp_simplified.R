@@ -1,5 +1,5 @@
-exptDir = 'G:/Matlab/track_reg/CSTanalysis/sym/template/example/multi'
-grpLabs = c('SDCP', 'HC')
+exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del')
+grpLabs = c('PAT', 'NOR')
 thresh  = 0.05
 nPerms  = 100
 
