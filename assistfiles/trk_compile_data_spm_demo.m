@@ -9,7 +9,7 @@ function trk_compile_data_spm_demo
 %Nov 2015
 
 oldPath = pwd;
-exDir = uigetdir('');
+exDir = spm_select(1, 'dir');
 cd(exDir)
 dirList = dir(fullfile(exDir, '*'));
 dirList(~[dirList.isdir]) = [];
