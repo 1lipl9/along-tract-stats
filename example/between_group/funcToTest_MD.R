@@ -5,7 +5,7 @@ library(RColorBrewer) # Color tables
 library(psych)
 
 aov_trk_model <- function(df){
-  fitValue <- aov(FA ~ Hemispere*Group + Error(ID), df)
+  fitValue <- aov(MD ~ Hemispere*Group + Error(ID), df)
   ### Herein need some other codes.
 }
 
@@ -18,8 +18,8 @@ getP <- function(testT, maxT){
 corTest <- function(df) {
   # browser()
   new_df <- df %>% arrange(Hemisphere, Point)
-  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), FA),
-                           R = select(filter(new_df, Hemisphere == 'R'), FA))
+  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), MD),
+                      R = select(filter(new_df, Hemisphere == 'R'), MD))
   names(new_new_df) <- c('L', 'R')
   rValueMat = corr.test(new_new_df)
   rValue = rValueMat$r[1,2]
@@ -28,8 +28,8 @@ corTest <- function(df) {
 
 pairedTest <- function(df) {
   new_df <- df %>% arrange(Hemisphere, Point)
-  new_new_df <- select(new_df, Hemisphere, FA)
-  pairedT <- t.test(FA~Hemisphere, data = new_new_df, paired = T)
+  new_new_df <- select(new_df, Hemisphere, MD)
+  pairedT <- t.test(MD~Hemisphere, data = new_new_df, paired = T)
   pairedPValue <- pairedT$p.value
   pairedTValue <- pairedT$statistic
   data.frame(pairedTValue = pairedTValue, pairedPValue = pairedPValue, 
@@ -37,15 +37,15 @@ pairedTest <- function(df) {
 }
 FDCalc <- function(df) {
   new_df <- df %>% arrange(Hemisphere, Point)
-  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), FA),
-                      R = select(filter(new_df, Hemisphere == 'R'), FA))
+  new_new_df <- cbind(L = select(filter(new_df, Hemisphere == 'L'), MD),
+                      R = select(filter(new_df, Hemisphere == 'R'), MD))
   names(new_new_df) <- c('L', 'R')
   FDValue = transmute(new_new_df, FD = sum(abs(L-R))/nrow(new_new_df))[1, ]
   data.frame(FDValue = FDValue, Group = unique(df$Group))
 }
 plotFunc <- function(trk_data) {
   # the data is casted to do the corr analysis
-  trk_data_melt <- select(trk_data, one_of(c('Point', 'ID', 'FA')))
+  trk_data_melt <- select(trk_data, one_of(c('Point', 'ID', 'MD')))
   colnames(trk_data_melt)[3] <- 'Value'
   trk_data_cast <- dcast(trk_data_melt, Point~ID)
   
@@ -54,8 +54,8 @@ plotFunc <- function(trk_data) {
   print(varbb)
   
   ########
-  # # Plot FA vs. position, conditioned on hemisphere, tract, and group
-  p3 <- ggplot(data = trk_data, aes(x = Position, y = FA))
+  # # Plot MD vs. position, conditioned on hemisphere, tract, and group
+  p3 <- ggplot(data = trk_data, aes(x = Position, y = MD))
   p3 <- p3 + geom_line(aes(group = ID, color = Group), alpha = 0.3) + xlab('Position along tract (%)') 
   p3 <- p3 + geom_smooth(aes(group = Group, color = Group))
   
@@ -67,5 +67,5 @@ plotFunc <- function(trk_data) {
   corrgram(trk_data_cast[,-1], lower.panel = panel.pie, 
            upper.panel = panel.pts,
            text.panel = panel.txt, 
-           main = 'The CST_R FA profiles\' correlation')
+           main = 'The CST_R MD profiles\' correlation')
 }
