@@ -9,12 +9,12 @@ function trk_compile_data_spm_demo
 %Nov 2015
 
 oldPath = pwd;
-exDir = uigetdir('');
+exDir = spm_select(1, 'dir');
 cd(exDir)
 dirList = dir(fullfile(exDir, '*'));
 dirList(~[dirList.isdir]) = [];
 dirList(1:2) = [];
 subIDs = {dirList.name};
 tract_info = dataset('file', fullfile(exDir, 'tract_info.txt'));
-[track_means, starting_pts_out, nPts] = trk_compile_data_spm_preinterp(exDir, subIDs, tract_info, [], [], 1, 1);
+[track_means, starting_pts_out, nPts] = trk_compile_data_spm_preinterp_MD(exDir, subIDs, tract_info, [], [], 1, 1);
 cd(oldPath)

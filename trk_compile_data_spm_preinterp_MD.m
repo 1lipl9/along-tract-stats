@@ -1,7 +1,8 @@
-function [track_means,starting_pts_out,nPts] = trk_compile_data_spm_preinterp(subsDir,subIDs,tract_info,outDir,starting_pts_in, saveTrk, saveASCII)
-%TRK_COMPILE_DATA_SPM_PREINTERP - Compiles along-tract data for subjects/hemispheres/tracts
+function [track_means,starting_pts_out,nPts] = trk_compile_data_spm_preinterp_MD(subsDir,subIDs,tract_info,outDir,starting_pts_in, saveTrk, saveASCII)
+%TRK_COMPILE_DATA_SPM_PREINTERP_MD - Compiles along-tract data for
+%subjects/hemispheres/tracts, this is a MD edition. Shaofeng Duan
 %
-% Syntax: [track_means,starting_pts_out,nPts] = TRK_COMPILE_DATA_SPM_PREINTERP(subsDir,subIDs,tract_info,outDir,starting_pts_in,saveTrk,saveASCII)
+% Syntax: [track_means,starting_pts_out,nPts] = TRK_COMPILE_DATA_SPM_PREINTERP_MD(subsDir,subIDs,tract_info,outDir,starting_pts_in,saveTrk,saveASCII)
 %
 % Inputs:
 %    subsDir    - Path to subject directory [char]
@@ -78,9 +79,9 @@ tract_info.view    = cell2mat(cellfun(@eval, tract_info.view, 'UniformOutput',fa
 fid1 = fopen(fullfile(outDir, 'trk_props_long.txt'), 'wt');
 fprintf(fid1, 'ID\tHemisphere\tTract\tStreamlines');
 
-% Save another file with the mean FA +/- SD at each point along the track
+% Save another file with the mean MD +/- SD at each point along the track
 fid2 = fopen(fullfile(outDir, 'trk_data.txt'), 'wt');
-fprintf(fid2, 'ID\tPoint\tHemisphere\tTract\tFA\tSD');
+fprintf(fid2, 'ID\tPoint\tHemisphere\tTract\tMD\tSD');
 
 % Initialize variables
 track_means      = struct([]);
@@ -104,7 +105,7 @@ for iTrk=1:length(tract_info)
             % Note: Modify path according to your directory setup
             subStr  = subIDs{i};
             trkName = sprintf('%s_%s', tract_info.Tract{iTrk}, tract_info.Hemisphere{iTrk});
-            volPath = fullfile(subsDir, subStr, 'dti_fa.nii');
+            volPath = fullfile(subsDir, subStr, 'dti_md.nii');
             volume  = spm_read_vols(spm_vol(volPath));                                                                   %这个地方改成了spm软件的方法读图像
             
             % Load tract group
@@ -143,7 +144,7 @@ for iTrk=1:length(tract_info)
             
             % Extract scalar values from 'volume'
             [header, tracks_interp_str] = trk_adjust_margin(header, tracks_interp_str);
-            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'FA');
+            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'MD');
             
             % Determine the mean scalar at each cross section along the tract group
             [scalar_mean, scalar_sd] = trk_mean_sc(header_sc,tracks_sc);
