@@ -42,7 +42,7 @@ groupAna1 <- function(df) {
   data.frame(y = sd(df))
 }
 groupAna2 <- function(df) {
-  data.frame(y = mean(df), ymin = min(df), ymax = max(df))
+  data.frame(y = mean(df), ymin = mean(df) - sd(df), ymax = mean(df) + sd(df))
 }
 p <- ggplot(trk_data_PAT, aes(x = Position, y = FA))
 p <- p  + geom_line(aes(group = ID:State, color = State), alpha = 0.2) + 

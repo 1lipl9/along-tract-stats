@@ -63,27 +63,69 @@ fit_trk_model2 <- function(df, groupfac){
                summary(lme.trk)$tTable[term.rows,])
   } else data.frame()
 }
+
+get_breaks <- function(models, thresh=0.05){
+  df <- models$tTable
+  sig  = df$p.value < thresh
+  dsig = c(diff(sig), 0)
+  if(subset(models$anova, Term=="Point:State")$p.value < thresh){
+    onpts  = df$Point[dsig==1]  + 0.5
+    offpts = df$Point[dsig==-1] + 0.5
+    
+    # Check for any unclosed segments
+    if(dsig[which(dsig != 0)[1]] == -1) {
+      onpts = c(1, onpts)
+    }
+    if(dsig[rev(which(dsig != 0))[1]] == 1) {
+      offpts = c(offpts, length(dsig))
+    }
+    
+    data.frame(on = (onpts-1)  * 100/(length(df$Point)-1),
+               off = (offpts-1) * 100/(length(df$Point)-1))
+  } else data.frame(on=0, off=0)
+}
+
+groupAna <- function(df) {
+  data.frame(y = mean(df), ymin = mean(df) - sd(df), ymax = mean(df) + sd(df))
+}
+
+lin_interp = function(x, spacing=0.01) {
+  approx(1:length(x), x, xout=seq(1,length(x), spacing))$y
+}
+###############################################################################
 models_nor = list()
 models_nor$anova = fit_trk_model1(trk_data_nor, 'Hemisphere')
 models_nor$tTable = fit_trk_model2(trk_data_nor, 'Hemisphere')
 
-# fit_trk_model3 <- function(df){
-#   lme.trk = lme(FA ~ Point*State, data=df, random = ~ 1 | ID, na.action=na.omit)
-#   data.frame(Term = rownames(anova(lme.trk)), anova(lme.trk))
-# }
-# # Fit a cell-means version to get effect sizes relative to controls
-# fit_trk_model4 <- function(df){
-#   lme.trk = tryCatch(lme(FA ~ Point/State - 1, 
-#                          data=df, random = ~ 1 | ID, na.action=na.omit), 
-#                      error = function(e) data.frame())
-#   if(length(lme.trk)!=0){
-#     term.RE = paste('Point[0-9]+:', 'State', '.+', sep='')
-#     term.rows = grep(term.RE, row.names(summary(lme.trk)$tTable))
-#     data.frame(Point = as.numeric(levels(factor(df$Point))),
-#                summary(lme.trk)$tTable[term.rows,])
-#   } else data.frame()
-# }
-
 models_pat = list()
 models_pat$anova = fit_trk_model1(trk_data_pat, 'State')
 models_pat$tTable = fit_trk_model2(trk_data_pat, 'State')
+models_pat$tTable = transform(models_pat$tTable, Position = (as.numeric(Point)-1) * 
+                                  100/(max(as.numeric(Point))-1))
+# If the F-test across the Point:Group terms in a panel is significant, 
+#plot a bar at the bottom to indicate which pointwise t-tests are significant
+
+break_list = get_breaks(models_pat, 0.05)
+sig_bars   = geom_segment(aes(x=on, y=0.8, xend=off, yend=0.8, group=NULL, size=NULL), 
+                          data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
+
+
+p <- ggplot(trk_data_pat, aes(x = Position, y = FA))
+p <- p + geom_line(aes(group = ID:State, color = State), alpha = 0.2) + 
+  stat_summary(aes(group = State, fill = State, color = State),
+               fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_bars
+colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
+                                 'Position'))
+models_pat$tTable.interp <- colfunc(models_pat$tTable)
+
+
+sigFig = ggplot(data=models_pat$tTable.interp, aes(x=Position, y=p.value, color=p.value < 0.05, 
+                                           group=1)) + geom_line() + 
+  xlab('Position along tract (%)') + scale_color_manual('p.value < 0.05', values=c('red', 'green'))
+
+# Gray out non-significant areas
+grayout_p = annotate('rect', xmin=0, xmax=100, ymin=0.05, ymax=1, alpha=0.25)
+
+# Make final plot
+p5 <- sigFig + grayout_p + scale_y_log10(limits=c(0.00001, 1), breaks=c(0.001, 0.01, 0.1, 1))
+

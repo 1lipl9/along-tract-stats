@@ -29,7 +29,7 @@ trk_props_long = merge(trk_props_long, demog)
 # Read in length-parameterized track data (ex: FA) and merge with demographics
 trk_data              = read.table(file.path(exptDir, 'trk_data.txt'),  
                                    header=T)
-trk_data <- filter(trk_data, Point < 21)
+
 trk_data$Point        = factor(trk_data$Point)
 trk_data[trk_data==0] = NA
 trk_data              = merge(trk_data, trk_props_long)
@@ -55,7 +55,7 @@ groupAna1 <- function(df) {
   data.frame(y = sd(df))
 }
 groupAna2 <- function(df) {
-  data.frame(y = mean(df), ymin = min(df), ymax = max(df))
+  data.frame(y = mean(df), ymin = mean(df) - sd(df), ymax = mean(df) + sd(df))
 }
 rValue_df <- ddply(trk_data, c('ID'), corTest)
 FDValue_df <- ddply(trk_data, c('ID'), FDCalc)
@@ -80,9 +80,9 @@ p <- ggplot(trk_data, aes(x = Position, y = FA))
 p <- p + facet_grid(~Group) + geom_line(aes(group = ID:Hemisphere, 
                                             color = Hemisphere), alpha = 0.2) + 
   stat_summary(aes(group = Hemisphere, fill = Hemisphere, color = Hemisphere),
-               fun.data = groupAna2, geom = 'smooth', alpha = 0.2) + 
+               fun.data = groupAna2, geom = 'smooth', alpha = 0.3) + 
   stat_summary(aes(group = Hemisphere, color = Hemisphere), fun.data = groupAna1, geom = 'line')
-  
+# 画方差值  
 
 extractPval <- function(df) {
   pvalue(oneway_test(FA~Hemisphere, data = df))/2
