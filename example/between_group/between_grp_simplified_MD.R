@@ -1,4 +1,4 @@
-exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del_FA')
+exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del_MD')
 grpLabs = c('PAT', 'NOR')
 thresh  = 0.05
 nPerms  = 100
@@ -14,7 +14,7 @@ library(psych)
 library(coin)
 library(gridExtra)
 
-source('funcToTest.R')
+source('funcToTest_MD.R')
 ################################################################################
 # Import and format data
 # Read in demographics
@@ -29,18 +29,17 @@ trk_props_long = merge(trk_props_long, demog)
 # Read in length-parameterized track data (ex: FA) and merge with demographics
 trk_data              = read.table(file.path(exptDir, 'trk_data.txt'),  
                                    header=T)
-
 trk_data$Point        = factor(trk_data$Point)
 trk_data[trk_data==0] = NA
 trk_data              = merge(trk_data, trk_props_long)
 # Add a Position column for easier plotting
 trk_data              = ddply(trk_data, c("Tract", "Hemisphere"),
-                        transform, 
-                        Position = (as.numeric(Point)-1) * 100/
-                          (max(as.numeric(Point))-1))
+                              transform, 
+                              Position = (as.numeric(Point)-1) * 100/
+                                (max(as.numeric(Point))-1))
 
 #Calculate the sd value for each group and hemisphere.
-sdVal <- trk_data %>% group_by(Group, Hemisphere, Point) %>% do(sdVal = sd(.$FA))
+sdVal <- trk_data %>% group_by(Group, Hemisphere, Point) %>% do(sdVal = sd(.$MD))
 sdVal <- as.data.frame(sdVal)
 sdVal$sdVal <- as.numeric(sdVal$sdVal)
 
@@ -55,7 +54,7 @@ groupAna1 <- function(df) {
   data.frame(y = sd(df))
 }
 groupAna2 <- function(df) {
-  data.frame(y = mean(df), ymin = mean(df) - sd(df), ymax = mean(df) + sd(df))
+  data.frame(y = mean(df), ymin = min(df), ymax = max(df))
 }
 rValue_df <- ddply(trk_data, c('ID'), corTest)
 FDValue_df <- ddply(trk_data, c('ID'), FDCalc)
@@ -72,20 +71,30 @@ rValueFig <- rValueFig + geom_point() +
 FDValueFig <- ggplot(FDValue_df, aes(x = Group, y = FDValue))
 FDValueFig <- FDValueFig + geom_point() + 
   stat_summary(aes(group = Group), fun.data = groupAna2, geom = 'crossbar') + 
-  ylab('FD')
+    ylab('FD')
 # dev.new()
 # grid.arrange(rValueFig, FDValueFig, nrow = 1)
 
-p <- ggplot(trk_data, aes(x = Position, y = FA))
+p <- ggplot(trk_data, aes(x = Position, y = MD))
 p <- p + facet_grid(~Group) + geom_line(aes(group = ID:Hemisphere, 
                                             color = Hemisphere), alpha = 0.2) + 
   stat_summary(aes(group = Hemisphere, fill = Hemisphere, color = Hemisphere),
-               fun.data = groupAna2, geom = 'smooth', alpha = 0.3) + 
+               fun.data = groupAna2, geom = 'smooth', alpha = 0.2) + 
   stat_summary(aes(group = Hemisphere, color = Hemisphere), fun.data = groupAna1, geom = 'line')
-# 画方差值  
 
+# dev.new()
+# grid.arrange(p)
+
+##model fit
+# sigextr <- function(object) {
+#   hh <- summary(object)
+#   c(hh[[1]][[1]][[5]][1],  hh[[2]][[1]][[5]][1])
+# }
+# modlist <- trk_data %>% group_by(Point) %>% do(mod = aov(FA~Hemisphere+Group + Error(ID), .))
+# 
+# tt <- vapply(modlist$mod, sigextr, c(group = 0, hemi = 0))
 extractPval <- function(df) {
-  pvalue(oneway_test(FA~Hemisphere, data = df))/2
+  pvalue(oneway_test(MD~Hemisphere, data = df))/2
 }
 modlist <- trk_data %>% group_by(Point, Group) %>% 
   do(mod = extractPval(.))

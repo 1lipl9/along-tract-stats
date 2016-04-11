@@ -1,4 +1,4 @@
-exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del')
+exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del_FA')
 grpLabs = c('PAT', 'NOR')
 thresh  = 0.05
 nPerms  = 100
