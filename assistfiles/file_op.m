@@ -16,11 +16,10 @@ trk1 = fullfile(dirname_src, 'CST_L.trk');
 trk2 = fullfile(dirname_src, 'CST_R.trk');
 
 listb = dir('*');
-
+listb(~[listb.isdir]) = [];
 for bb = 3:numel(listb)
-    bb
-    copyfile(trk1, [listb(bb).name, '\']);
-    copyfile(trk2, [listb(bb).name, '\']);
+    copyfile(trk1, [listb(bb).name, '\'], 'f');
+    copyfile(trk2, [listb(bb).name, '\'], 'f');
 end
 %%
 
