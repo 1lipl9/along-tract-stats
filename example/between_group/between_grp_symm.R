@@ -96,6 +96,8 @@ lin_interp = function(x, spacing=0.01) {
 models_nor = list()
 models_nor$anova = fit_trk_model1(trk_data_nor, 'Hemisphere')
 models_nor$tTable = fit_trk_model2(trk_data_nor, 'Hemisphere')
+models_nor$tTable = transform(models_nor$tTable, Position = (as.numeric(Point)-1) * 
+                                100/(max(as.numeric(Point))-1))
 
 models_pat = list()
 models_pat$anova = fit_trk_model1(trk_data_pat, 'State')
@@ -110,8 +112,8 @@ sig_bars   = geom_segment(aes(x=on, y=0.8, xend=off, yend=0.8, group=NULL, size=
                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
 
 
-p <- ggplot(trk_data_pat, aes(x = Position, y = FA))
-p <- p + geom_line(aes(group = ID:State, color = State), alpha = 0.2) + 
+p_pat <- ggplot(trk_data_pat, aes(x = Position, y = FA))
+p_pat <- p_pat + geom_line(aes(group = ID:State, color = State), alpha = 0.2) + 
   stat_summary(aes(group = State, fill = State, color = State),
                fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_bars
 colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
@@ -119,7 +121,7 @@ colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value',
 models_pat$tTable.interp <- colfunc(models_pat$tTable)
 
 
-sigFig = ggplot(data=models_pat$tTable.interp, aes(x=Position, y=p.value, color=p.value < 0.05, 
+sigFig_pat = ggplot(data=models_pat$tTable.interp, aes(x=Position, y=p.value, color=p.value < 0.05, 
                                            group=1)) + geom_line() + 
   xlab('Position along tract (%)') + scale_color_manual('p.value < 0.05', values=c('red', 'green'))
 
@@ -127,5 +129,5 @@ sigFig = ggplot(data=models_pat$tTable.interp, aes(x=Position, y=p.value, color=
 grayout_p = annotate('rect', xmin=0, xmax=100, ymin=0.05, ymax=1, alpha=0.25)
 
 # Make final plot
-p5 <- sigFig + grayout_p + scale_y_log10(limits=c(0.00001, 1), breaks=c(0.001, 0.01, 0.1, 1))
+p_sig_pat <- sigFig_pat + grayout_p + scale_y_log10(limits=c(0.00001, 1), breaks=c(0.001, 0.01, 0.1, 1))
 

@@ -1,4 +1,5 @@
-exptDir = file.path('F:', 'ShaofengDuan', 'cerebral_infarction_statistics', 'after_del_FA')
+exptDir = file.path('F:', 'Github', 'along-tract-stats', 
+                    'example', 'between_group')
 grpLabs = c('PAT', 'NOR')
 thresh  = 0.05
 nPerms  = 100
