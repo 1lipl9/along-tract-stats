@@ -34,7 +34,7 @@ for iTrk = 1:numel(tracks1)
 end
 
 for iTrk = 1:numel(tracks2)
-    vox = ceil(tracks2(iTrk).matrix(:,1:3) ./ repmat(header2.voxel_size, tracks2(iTrk).nPoints,1));
+    vox = floor(tracks2(iTrk).matrix(:,1:3) ./ repmat(header2.voxel_size, tracks2(iTrk).nPoints,1));
     ind2                = union(sub2ind(header2.dim, vox(:,1), vox(:,2), vox(:,3)), ind2);
 end
 
