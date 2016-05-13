@@ -1,0 +1,6 @@
+function [header, tracks] = trk_cat;
+
+trkNames = spm_select(Inf, 'trk', 'choose the trks you want to catenate...');
+trkNames = cellstr(trkNames);
+
+[headerC, tracksC] = cellfun(@trk_read, trkNames);
