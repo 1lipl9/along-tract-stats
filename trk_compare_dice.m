@@ -42,7 +42,7 @@ end
 vox1(vox1 <= 0) = 1;
 vox2(vox2 <= 0) = 2;
 
-ind1 = unique(sub2ind(header1.dim, vox1));
-ind2 = unique(sub2ind(header2.dim, vox2));
+ind1 = unique(sub2ind(header1.dim, vox1(:,1), vox1(:,2), vox1(:,3)));
+ind2 = unique(sub2ind(header2.dim, vox2(:,1), vox2(:,2), vox2(:,3)));
 
 dice = 2*numel(intersect(ind1, ind2))/(numel(ind1) + numel(ind2));

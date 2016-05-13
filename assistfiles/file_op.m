@@ -26,7 +26,24 @@ end
 listb = dir('*');
 listb(~[listb.isdir]) = [];
 for bb = 3:numel(listb)
-    cd(listb(bb).name)
-    movefile('FA.nii', 'dti_fa.nii');
-    cd ..
+%     cd(listb(bb).name)
+%---------------------------------------------------
+%     listc = dir('*FA*');
+%     fafile = listc(1).name;
+%     movefile(fafile, 'dti_fa.nii');
+%     rmdir('dti_fa.nii');
+%     delete('dti_fa.nii');
+%----------------------------------------
+%     listc = dir('*trk*');
+%     for cc = 1:numel(listc)
+%         trkName = listc(cc).name;
+%         [pat, tit, ext] = fileparts(trkName);
+%         namecell = textscan(tit, '%s', 'Delimiter', {'_', '.'});
+%         trkName_new = [namecell{1}{3}, '_', namecell{1}{4}, ext];
+%         movefile(trkName, trkName_new);     
+%     end
+%-------------------------------------------------------
+%     cd ..
+[pat, tit, ext] = fileparts(listb(bb).name);
+movefile(tit, ['reg', tit]);
 end
