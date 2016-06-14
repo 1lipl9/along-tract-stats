@@ -2,6 +2,8 @@
 # registered tracts and real tracts.
 
 exptDir = choose.dir();
+thresh  = 0.05
+nPerms  = 100
 
 library(nlme)         # Mixed-effects models
 library(ggplot2)      # Plotting tools
@@ -34,16 +36,16 @@ trk_data[trk_data==0] = NA
 trk_data              = merge(trk_data, trk_props_long)
 # Add a Position column for easier plotting
 trk_data              = ddply(trk_data, c("Tract", "Hemisphere"),
-                        transform,
-                        Position = (as.numeric(Point)-1) * 100/
-                          (max(as.numeric(Point))-1))
+                              transform,
+                              Position = (as.numeric(Point)-1) * 100/
+                                (max(as.numeric(Point))-1))
 
 
 
 # add within group contrast
 
 trk_data_nor <- filter(trk_data, Group == 'nor') # trk data self tracked
-trk_data_reg <- filter(trk_data, Group == 'reg') # trk data  registered edition
+
 
 FDcalc <- function(df1, df2) {
   FDvalue <- sum(abs(df1-df2))/nrow(df1)
@@ -67,17 +69,15 @@ FDcalc_vec <- function(df) {
 }
 
 p1 <- ggplot(aes(x = Position, y = FA), data = trk_data_nor)
-p1 <- p1 + geom_line(aes(group = ID)) + facet_grid(Tract~Hemisphere) + ylim(0, 1)
+p1 <- p1 + geom_line(aes(group = ID)) + facet_grid(Tract~Hemisphere)
 
-p2 <- ggplot(aes(x = Position, y = FA), data = trk_data_reg)
-p2 <- p2 + geom_line(aes(group = ID)) + facet_grid(Tract~Hemisphere) + ylim(0, 1)
+# p2 <- ggplot(aes(x = Position, y = FA), data = trk_data_reg)
+# p2 <- p2 + geom_line(aes(group = ID)) + facet_grid(Tract~Hemisphere)
 
 trk_data_nor_sim <- dlply(trk_data_nor, c('Tract', 'Hemisphere'), FDcalc_vec)
-trk_data_reg_sim <- dlply(trk_data_reg, c('Tract', 'Hemisphere'), FDcalc_vec)
 trk_data_nor_sim_mean <- vapply(trk_data_nor_sim, mean, as.numeric(0))
-trk_data_reg_sim_mean <- vapply(trk_data_reg_sim, mean, as.numeric(0))
+# trk_data_reg_sim <- dlply(trk_data_reg, c('Tract', 'Hemisphere'), FDcalc_vec)
 
-contrVal <- mapply(t.test, trk_data_nor_sim, trk_data_reg_sim)
 #----------------------------
 
 # rCalc <- function(df) {

@@ -1,13 +1,13 @@
 
 %%
-lista = dir('*tr*nii');
+lista = dir('*nii');
 
 for aa = 1:numel(lista)
     C = textscan(lista(aa).name, '%s', 'delimiter', '_');
     dirname = [C{1}{1}, C{1}{3}];
-%     mkdir(dirname);
+    mkdir(dirname);
     if exist(dirname, 'dir')
-        movefile(lista(aa).name, fullfile('.', dirname, 'dti_md.nii'));
+        movefile(lista(aa).name, fullfile('.', dirname, 'dti_fa.nii'));
     end
 end
 %%
