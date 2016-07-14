@@ -10,7 +10,7 @@ function [header, tracks] = trk_add_pValue
 trkName = spm_select(1, 'trk', 'select a mean trk file.');
 [header, tracks] = trk_read(trkName);
 
-pvalFile = spm_select(1, 'csv', 'select a csv file.');
+pvalFile = spm_select(1, '.csv', 'select a csv file.');
 pTbl = readtable(pvalFile);
 
 tracks(1).matrix = [tracks(1).matrix, pTbl{:,1}];

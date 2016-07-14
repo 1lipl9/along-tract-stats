@@ -22,11 +22,11 @@ library(gridExtra)
 # function to read data --------------------------------------------------------
 readData <- function(exptDir) {
   trk_props_long = read.table(file.path(exptDir, 'trk_props_long.txt'), header=T)
-
+  
   # Read in length-parameterized track data (ex: FA) and merge with demographics
   trk_data              = read.table(file.path(exptDir, 'trk_data.txt'),
                                      header=T)
-
+  
   trk_data$Point        = factor(trk_data$Point)
   # trk_data[trk_data==0] = NA
   trk_data              = merge(trk_data, trk_props_long)
@@ -45,7 +45,7 @@ FDcalc <- function(df1, df2) {
 df_FD_calc <- function(df) {
   df_L <- filter(df, Hemisphere == "L")
   df_R <- filter(df, Hemisphere == "R")
-
+  
   data.frame(ID = unique(df$ID), Tract = unique(df$Tract), FD = FDcalc(df_L, df_R))
 }
 

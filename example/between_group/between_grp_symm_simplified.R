@@ -126,3 +126,7 @@ grayout_p = annotate('rect', xmin=0, xmax=100, ymin=0.05, ymax=1, alpha=0.25)
 # Make final plot
 p_sig_pat <- sigFig_pat + grayout_p + scale_y_log10(limits=c(0.00001, 1), breaks=c(0.001, 0.01, 0.1, 1)) + theme_bw()
 
+pval <- models_pat$tTable$p.value
+Filename2W <- paste0(format(Sys.time(), '%m_%d_%H_%M_%S'), '.csv')
+write.table(pval, file = Filename2W, sep = ',', row.names = F)
+
