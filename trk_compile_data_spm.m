@@ -104,7 +104,7 @@ for iTrk=1:length(tract_info)
             % Note: Modify path according to your directory setup
             subStr  = subIDs{i};
             trkName = sprintf('%s_%s', tract_info.Tract{iTrk}, tract_info.Hemisphere{iTrk});
-            volPath = fullfile(subsDir, subStr, 'dti_fa.nii');
+            volPath = fullfile(subsDir, subStr, 'dti_rd.nii');
             volume  = spm_read_vols(spm_vol(volPath));                                                                   %这个地方改成了spm软件的方法读图像
             
             % Load tract group
@@ -143,7 +143,7 @@ for iTrk=1:length(tract_info)
             
             % Extract scalar values from 'volume'
             [header, tracks_interp_str] = trk_adjust_margin(header, tracks_interp_str);
-            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'FA');
+            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'RD');
             
             % Determine the mean scalar at each cross section along the tract group
             [scalar_mean, scalar_sd] = trk_mean_sc(header_sc,tracks_sc);

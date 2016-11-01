@@ -1,9 +1,5 @@
 # This sctripts just used to contrast the correspond between
 # registered tracts and real tracts.
-
-exptDir1 = choose.dir(getwd(), caption = "Select output from sym temp...");
-exptDir2 = choose.dir(exptDir1, caption = "Select output from asym temp...");
-
 library(nlme)         # Mixed-effects models
 library(ggplot2)      # Plotting tools
 library(plyr)
@@ -14,6 +10,11 @@ library(corrgram)
 library(psych)
 library(coin)
 library(gridExtra)
+
+exptDir1 = choose.dir(getwd(), caption = "Select output from sym temp...");
+exptDir2 = choose.dir(exptDir1, caption = "Select output from asym temp...");
+
+
 
 # source('funcToTest.R')
 ################################################################################
@@ -68,7 +69,7 @@ p2 <- ggplot(aes(x = Position, y = FA), data = trk_data_asym)
 p2 <- p2 + geom_line(aes(group = ID), alpha = 0.2) + facet_grid(Tract~Hemisphere) + ylim(0, 1) +
   stat_summary(aes(group = 1), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
 
-grid.arrange(p1, p2, nrow = 2)
+grid.arrange(p1, p2, ncol = 2)
 
 trk_data_sym_FD$From <- rep('sym', nrow(trk_data_sym_FD))
 trk_data_asym_FD$From <- rep('asym', nrow(trk_data_asym_FD))
