@@ -61,12 +61,12 @@ for aa = 1:numel(lista)
 end
 
 %%
-listb = dir('sub*');
+listb = dir('*sub*');
 listb(~[listb.isdir]) = [];
 
 for bb = 1:numel(listb)
     cd(listb(bb).name)
-    copyfile('dyads1.nii', [listb(bb).name, '_dyads1.nii']);
-    copyfile('dyads2.nii', [listb(bb).name, '_dyads2.nii']);
+    copyfile('dti_FA.nii', ['..\' listb(bb).name, '_FA.nii']);
+    copyfile('dti_MD.nii', ['..\' listb(bb).name, '_MD.nii']);
     cd ..
 end
