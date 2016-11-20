@@ -75,7 +75,7 @@ fprintf(fid1, 'ID\tHemisphere\tTract\tStreamlines');
 
 % Save another file with the mean FA +/- SD at each point along the track
 fid2 = fopen(fullfile(outDir, 'trk_data.txt'), 'wt');
-fprintf(fid2, 'ID\tPoint\tHemisphere\tTract\tdxx\tdxy\tdxz\tdyy\tdyz\tdzz');
+fprintf(fid2, 'ID\tPoint\tHemisphere\tTract\tFA\tSD');
 
 % Initialize variables
 track_means      = struct([]);
@@ -132,14 +132,12 @@ for iTrk=1:length(tract_info)
             [header_sc, tracks_sc] = trk_add_vec(header,tracks_interp_str,volume,'RD');
             
             % Determine the mean scalar at each cross section along the tract group
-            scalar_le_mean = trk_mean_vec(header_sc,tracks_sc);
-            scalar_mean = scalar_le_mean(:, 1);
+            [scalar_mean, scalar_sd] = trk_mean_sc(header_sc,tracks_sc);
+            
             % Write outputs
             fprintf(fid1, '\n%s\t%s\t%s\t%d', subStr, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, header.n_count);
             for iPt=1:nPts(iTrk,i)
-                fprintf(fid2, '\n%s\t%d\t%s\t%s\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%0.4f', subStr, iPt, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, ...
-                    scalar_le_mean(iPt, 1), scalar_le_mean(iPt, 2), scalar_le_mean(iPt, 3), scalar_le_mean(iPt, 4), ...
-                    scalar_le_mean(iPt, 5), scalar_le_mean(iPt, 6));
+                fprintf(fid2, '\n%s\t%d\t%s\t%s\t%0.4f\t%0.4f', subStr, iPt, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, scalar_mean(iPt), scalar_sd(iPt));
             end
             
             % Determine the mean streamline geometry for display in QC figures
