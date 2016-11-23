@@ -92,13 +92,14 @@ for iTrk=1:length(tract_info)
     % Loop over subjects
     for i=1:length(subIDs)
         if (i-1)/25 == ipage, newpage = 1; end        
-        try
             % Load scalar volume
             % Note: Modify path according to your directory setup
             subStr  = subIDs{i};
             trkName = sprintf('%s_%s', tract_info.Tract{iTrk}, tract_info.Hemisphere{iTrk});
-            volPath = fullfile(subsDir, subStr, 'dti_rd.nii');
-            volume  = spm_read_vols(spm_vol(volPath));                                                                   %这个地方改成了spm软件的方法读图像
+            volPath = fullfile(subsDir, subStr, 'dti_DT.nii');
+            Volume  = spm_read_vols(spm_vol(volPath)); 
+            volume = Volume(:, :, :, 1);
+            %这个地方改成了spm软件的方法读图像
             
             % Load tract group
             % Note: Modify path according to your directory setup
@@ -129,7 +130,7 @@ for iTrk=1:length(tract_info)
             
             % Extract scalar values from 'volume'
             [header, tracks_interp_str] = trk_adjust_margin(header, tracks_interp_str);
-            [header_sc, tracks_sc] = trk_add_vec(header,tracks_interp_str,volume,'RD');
+            [header_sc, tracks_sc] = trk_add_vec(header,tracks_interp_str,Volume);
             
             % Determine the mean scalar at each cross section along the tract group
             scalar_le_mean = trk_mean_vec(header_sc,tracks_sc);
@@ -137,7 +138,7 @@ for iTrk=1:length(tract_info)
             % Write outputs
             fprintf(fid1, '\n%s\t%s\t%s\t%d', subStr, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, header.n_count);
             for iPt=1:nPts(iTrk,i)
-                fprintf(fid2, '\n%s\t%d\t%s\t%s\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%0.4f', subStr, iPt, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, ...
+                fprintf(fid2, '\n%s\t%d\t%s\t%s\t%0.6f\t%0.6f\t%0.6f\t%0.6f\t%0.6f\t%0.6f', subStr, iPt, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk}, ...
                     scalar_le_mean(iPt, 1), scalar_le_mean(iPt, 2), scalar_le_mean(iPt, 3), scalar_le_mean(iPt, 4), ...
                     scalar_le_mean(iPt, 5), scalar_le_mean(iPt, 6));
             end
@@ -183,12 +184,6 @@ for iTrk=1:length(tract_info)
 %                 tracks_sc_mat = trk_restruc(tracks_sc);
                 trk_write_ascii(header_sc, tracks_sc, fullfile(outDir, sprintf('%s_%s.txt', subStr, trkName)))
             end
-            
-        catch me % No streamlines
-            fprintf(fid1, '\n%s\t%s\t%s\t0', subStr, tract_info.Hemisphere{iTrk}, tract_info.Tract{iTrk});
-            fprintf('Failed to process subject %s %s\n', subStr, trkName)
-            warning(me.message)
-        end
     end
     
     % Save QC figure

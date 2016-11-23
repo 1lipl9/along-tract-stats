@@ -104,7 +104,7 @@ for iTrk=1:length(tract_info)
             % Note: Modify path according to your directory setup
             subStr  = subIDs{i};
             trkName = sprintf('%s_%s', tract_info.Tract{iTrk}, tract_info.Hemisphere{iTrk});
-            volPath = fullfile(subsDir, subStr, 'dti_rd.nii');
+            volPath = fullfile(subsDir, subStr, 'dti_fa.nii');
             volume  = spm_read_vols(spm_vol(volPath));                                                                   %这个地方改成了spm软件的方法读图像
             
             % Load tract group
@@ -143,7 +143,7 @@ for iTrk=1:length(tract_info)
             
             % Extract scalar values from 'volume'
             [header, tracks_interp_str] = trk_adjust_margin(header, tracks_interp_str);
-            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'RD');
+            [header_sc, tracks_sc] = trk_add_sc(header,tracks_interp_str,volume,'FA');
             
             % Determine the mean scalar at each cross section along the tract group
             [scalar_mean, scalar_sd] = trk_mean_sc(header_sc,tracks_sc);
@@ -190,7 +190,8 @@ for iTrk=1:length(tract_info)
                 trk_write(header_mean_sc, track_mean_sc_str, fullfile(outDir, sprintf('%s_%s_mean.trk', subStr, trkName)))
             end
             
-            % Save raw streamlines to ASCII if desired
+            % Save raw streamlines to ASCII if desired modified by Shaofeng
+            % Duan, for there has some syntax faults.
             if saveASCII
 %                 tracks_sc_mat = trk_restruc(tracks_sc);
                 trk_write_ascii(header_sc, tracks_sc, fullfile(outDir, sprintf('%s_%s.txt', subStr, trkName)))

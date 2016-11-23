@@ -24,12 +24,12 @@ function expscalars = trk_mean_vec(header,tracks)
 %IHEP
 %2016-11-20
 
-scalars = zeros(tracks(1).nPoints, header.n_count, header.n_scalars);
+% scalars = zeros(tracks(1).nPoints, header.n_count, header.n_scalars);
 
-for i=1:header.n_scalars
-    mat_long        = cat(1, tracks.matrix);
-    scalars(:,:,i)  = reshape(mat_long(:,4), tracks(1).nPoints, header.n_count, header.n_scalars);
-end
+
+mat_long        = cat(1, tracks.matrix);
+scalars  = reshape(mat_long(:,4:end), tracks(1).nPoints, header.n_count, header.n_scalars);
+
 
 %% used log-euclidean frame
 logCell = cellfun(@(x) le_Log(x), num2cell(scalars, 3), 'UniformOutput', false);
