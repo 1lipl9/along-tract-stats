@@ -78,18 +78,27 @@ trk_data_asym_FD$From <- rep('asym', nrow(trk_data_asym_FD))
 trk_data_FD <- rbind(trk_data_sym_FD, trk_data_asym_FD)
 trk_data_FD$From <- factor(trk_data_FD$From)
 
-trk_CST <- filter(trk_data_FD, Tract == 'CST')
-
 pTtest <- function(df) {
   t.test(filter(df, From == 'sym')$FD, filter(df, From == 'asym')$FD, paired = T)
 }
 
 tResult <- dlply(trk_data_FD, c('Tract'), pTtest)
 
-#
-#
-# trk_data_sim <- dlply(trk_data, c('ID'), FDcalc_vec)
-# trk_data_sim_mean <- vapply(trk_data_sim, mean, as.numeric(0))
+trk_CST <- filter(trk_data_FD, Tract == 'CST')
+trk_CING <- filter(trk_data_FD, Tract == 'CING')
+trk_UNC <- filter(trk_data_FD, Tract == 'UNC')
+
+#plot FD contrast figure.
+boxplotfunc <- function(dat) {
+  boxp <- ggplot(aes(x = From, y = FD), data = dat)
+  boxp <- boxp + geom_boxplot() + ylim(0, 0.2) + theme_bw()
+  boxp
+}
+boxp1 <- boxplotfunc(trk_CST)
+boxp2 <- boxplotfunc(trk_CING)
+boxp3 <- boxplotfunc(trk_UNC)
+
+
 
 
 
