@@ -94,9 +94,12 @@ boxplotfunc <- function(dat) {
   boxp <- boxp + geom_boxplot() + ylim(0, 0.2) + theme_bw()
   boxp
 }
-boxp1 <- boxplotfunc(trk_CST)
-boxp2 <- boxplotfunc(trk_CING)
-boxp3 <- boxplotfunc(trk_UNC)
+boxp1 <- boxplotfunc(trk_CST) + theme(axis.title.x = element_blank(), 
+                                      axis.text = element_text(size = 12))
+boxp2 <- boxplotfunc(trk_CING) + theme(axis.title.x = element_blank(), 
+                                       axis.text = element_text(size = 12))
+boxp3 <- boxplotfunc(trk_UNC) + theme(axis.title.x = element_blank(), 
+                                      axis.text = element_text(size = 12))
 
 
 
