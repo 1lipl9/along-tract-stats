@@ -1,8 +1,8 @@
-# This sctripts just used to contrast the correspond between
-# registered tracts and real tracts.
+# This scripts used to calculated the Asymmetry index discrepancy between the
+#health and patient
 
-exptDir1 = choose.dir(getwd(), caption = "Select output from sym temp...");
-exptDir2 = choose.dir(exptDir1, caption = "Select output from asym temp...");
+exptDir1 = choose.dir(getwd(), caption = "Select output of patients");
+exptDir2 = choose.dir(exptDir1, caption = "Select output of controls");
 
 library(nlme)         # Mixed-effects models
 library(ggplot2)      # Plotting tools
@@ -74,19 +74,7 @@ df_AI_calc <- function(df) {
 groupStat <- function(df) {
   data.frame(y = mean(df), ymin = mean(df) - sd(df), ymax = mean(df) + sd(df))
 }
-# read data ------------------------------------------------------------------
-trk_data_pat  <- readData(exptDir1)
-trk_data_crl <- readData(exptDir2)
 
-trk_data_pat_AI  <- ddply(trk_data_pat, c('ID', 'Tract'), df_AI_calc)
-trk_data_crl_AI <- ddply(trk_data_crl, c('ID', 'Tract'), df_AI_calc)
-
-
-trk_data_pat_AI$From <- rep('pat', nrow(trk_data_pat_AI))
-trk_data_crl_AI$From <- rep('crl', nrow(trk_data_crl_AI))
-
-trk_data_AI <- rbind(trk_data_pat_AI, trk_data_crl_AI)
-trk_data_AI$From <- factor(trk_data_AI$From)
 
 ################################################################################
 # Fit LME models
@@ -141,6 +129,22 @@ lin_interp = function(x, spacing=0.01) {
   approx(1:length(x), x, xout=seq(1,length(x), spacing))$y
 }
 
+# read data ------------------------------------------------------------------
+trk_data_pat  <- readData(exptDir1)
+trk_data_crl <- readData(exptDir2)
+
+trk_data_pat_AI  <- ddply(trk_data_pat, c('ID', 'Tract'), df_AI_calc)
+trk_data_crl_AI <- ddply(trk_data_crl, c('ID', 'Tract'), df_AI_calc)
+
+
+trk_data_pat_AI$From <- rep('pat', nrow(trk_data_pat_AI))
+trk_data_crl_AI$From <- rep('crl', nrow(trk_data_crl_AI))
+
+trk_data_pat_AI_CST <- filter(trk_data_pat_AI, Tract == 'CST')
+trk_data_crl_AI_CST <- filter(trk_data_crl_AI, Tract == 'CST')
+
+trk_data_AI <- rbind(trk_data_pat_AI_CST, trk_data_crl_AI_CST)
+trk_data_AI$From <- factor(trk_data_AI$From)
 models_pat = list()
 models_pat$anova = fit_trk_model1(trk_data_AI, 'From')
 models_pat$tTable = fit_trk_model2(trk_data_AI, 'From')
@@ -153,13 +157,14 @@ break_list = get_breaks(models_pat, 0.05)
 
 # sig_bars   = geom_segment(aes(x=on, y=0.2, xend=off, yend=0.2, group=NULL, size=NULL), 
 #                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
-sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, ymin = -0.5, ymax = 0.5, alpha = 0.2)
+sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, ymin = -0.6, ymax = 0.6, alpha = 0.2)
 
 p_pat <- ggplot(trk_data_AI, aes(x = Position, y = AI))
 p_pat <- p_pat + geom_line(aes(group = ID:From, color = From), alpha = 0.2) + 
   stat_summary(aes(group = From, fill = From, color = From),
-               fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() + ylim(-0.8, 0.8) +
-  theme(axis.title = element_text(size = 18), axis.text = element_text(size = 18))
+               fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() + ylim(-0.6, 0.6) +
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 12)) + 
+  ylab('Asymmetry Index')
 
 colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
                                  'Position'))

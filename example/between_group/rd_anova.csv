@@ -1,0 +1,5 @@
+"Term","numDF","denDF","F.value","p.value"
+"(Intercept)","(Intercept)",1,1226,9831.82175726857,0
+"Point","Point",70,1226,79.5913509220389,0
+"Hemisphere","Hemisphere",1,1226,3.39455960392014,0.0656531709705765
+"Point:Hemisphere","Point:Hemisphere",70,1226,1.1233006335515,0.232158357130175

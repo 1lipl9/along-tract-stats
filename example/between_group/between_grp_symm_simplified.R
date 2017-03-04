@@ -2,7 +2,7 @@
 # it is used to analyze patient group.
 
 exptDir = choose.dir(getwd(), 'select a patient dir..')
-thresh  = 0.05
+thresh  = 0.01
 nPerms  = 100
 
 library(nlme)         # Mixed-effects models
@@ -34,7 +34,7 @@ trk_data              = ddply(trk_data, c("Tract", "Hemisphere"),
                               transform, Position = 
                                 (as.numeric(Point)-1) * 100/(max(as.numeric(Point))-1))
 
-trk_data_pat <- trk_data
+trk_data_pat <- filter(trk_data, Tract == 'CST')
 trk_data_pat$State <- rep('normal', nrow(trk_data_pat))
 trk_data_pat[which(trk_data_pat$Hemisphere == 'L' & trk_data_pat$Group == 'LS'),]$State <- 'unormal'
 trk_data_pat[which(trk_data_pat$Hemisphere == 'R' & trk_data_pat$Group == 'RS'),]$State <- 'unormal'
@@ -100,7 +100,7 @@ models_pat$tTable = transform(models_pat$tTable, Position = (as.numeric(Point)-1
 # If the F-test across the Point:Group terms in a panel is significant, 
 #plot a bar at the bottom to indicate which pointwise t-tests are significant
 
-break_list = get_breaks(models_pat, 0.05)
+break_list = get_breaks(models_pat, thresh)
 
 # sig_bars   = geom_segment(aes(x=on, y=0.2, xend=off, yend=0.2, group=NULL, size=NULL), 
 #                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
@@ -110,7 +110,7 @@ p_pat <- ggplot(trk_data_pat, aes(x = Position, y = FA))
 p_pat <- p_pat + geom_line(aes(group = ID:State, color = State), alpha = 0.2) + 
   stat_summary(aes(group = State, fill = State, color = State),
                fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() +
-  theme(axis.title = element_text(size = 18), axis.text = element_text(size = 18))
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 12))
 
 colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
                                  'Position'))

@@ -1,5 +1,5 @@
 exptDir = choose.dir(getwd(), 'select a health dir..')
-thresh  = 0.05
+thresh  = 0.01
 nPerms  = 100
 
 library(nlme)         # Mixed-effects models
@@ -15,10 +15,10 @@ library(gridExtra)
 # Identify the unormal side
 
 # Read in whole-track properties (ex: streamlines) and merge with demographics
-trk_props_long = read.table(file.path(exptDir, 'trk_props_long_rd.txt'), header=T)
+trk_props_long = read.table(file.path(exptDir, 'trk_props_long.txt'), header=T)
 
 # Read in length-parameterized track data (ex: FA) and merge with demographics
-trk_data              = read.table(file.path(exptDir, 'trk_data_rd.txt'),  header=T)
+trk_data              = read.table(file.path(exptDir, 'trk_data.txt'),  header=T)
 trk_data$Point        = factor(trk_data$Point)
 trk_data[trk_data==0] = NA
 trk_data              = merge(trk_data, trk_props_long)
@@ -56,7 +56,7 @@ get_breaks <- function(models, thresh=0.05){
   df <- models$tTable
   sig  = df$p.value < thresh
   dsig = c(diff(sig), 0)
-  if(subset(models$anova, Term=="Point:Hemisphere")$p.value < thresh){
+  if(1){
     onpts  = df$Point[dsig==1]  + 0.5
     offpts = df$Point[dsig==-1] + 0.5
     
@@ -89,17 +89,17 @@ models$tTable = transform(models$tTable, Position = (as.numeric(Point)-1) *
 # If the F-test across the Point:Group terms in a panel is significant, 
 #plot a bar at the bottom to indicate which pointwise t-tests are significant
 
-break_list = get_breaks(models, 0.05)
+break_list = get_breaks(models, thresh)
 
 # sig_bars   = geom_segment(aes(x=on, y=0.2, xend=off, yend=0.2, group=NULL, size=NULL), 
 #                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
 sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, ymin = 0, ymax = 1, alpha = 0.2)
 
-p1 <- ggplot(trk_data_CST, aes(x = Position, y = FA)) + labs(y = 'RD')
+p1 <- ggplot(trk_data_CST, aes(x = Position, y = FA)) + labs(y = 'FA')
 p1 <- p1 + geom_line(aes(group = ID:Hemisphere, color = Hemisphere), alpha = 0.2) + 
   stat_summary(aes(group = Hemisphere, fill = Hemisphere, color = Hemisphere),
                fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() +
-  theme(axis.title = element_text(size = 18), axis.text = element_text(size = 18))
+  theme(axis.title = element_text(size = 12), axis.text = element_text(size = 12))
 
 colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
                                  'Position'))

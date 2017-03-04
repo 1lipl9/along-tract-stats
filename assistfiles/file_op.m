@@ -61,12 +61,43 @@ for aa = 1:numel(lista)
 end
 
 %%
-listb = dir('*sub*');
+listb = dir('*');
 listb(~[listb.isdir]) = [];
 
-for bb = 1:numel(listb)
+for bb = 3:numel(listb)
     cd(listb(bb).name)
-    copyfile('dti_FA.nii', ['..\' listb(bb).name, '_FA.nii']);
-    copyfile('dti_MD.nii', ['..\' listb(bb).name, '_MD.nii']);
+    copyfile('dti_FA.nii.gz', ['..\' listb(bb).name, '_FA.nii.gz']);
+    copyfile('dti_MD.nii.gz', ['..\' listb(bb).name, '_MD.nii.gz']);
     cd ..
+end
+%%
+% DTI data classified
+lista = dir('*nii');
+
+for aa = 1:numel(lista)
+    filename = lista(aa).name;
+    [~, tit, ext]  = fileparts(filename);
+    dirname = tit;
+    mkdir(dirname);
+    if exist(dirname, 'dir')
+        movefile([tit, '.nii'], fullfile('.', dirname));
+        movefile([tit, '.bvec'], fullfile('.', dirname));
+        movefile([tit, '.bval'], fullfile('.', dirname));
+    end
+end
+
+%%
+%gzip nii file
+dirname = dir('*');
+for aa = 3:numel(dirname)
+    filename = fullfile(dirname(aa).name, [dirname(aa).name, '.nii']);
+    gzip(filename)
+    delete(filename)
+end
+
+%%
+lista = dir('*');
+
+for aa = 3:numel(lista)
+   copyfile(fullfile(lista(aa).name, 'dti_fa.nii'), [lista(aa).name, '_FA.nii']); 
 end
