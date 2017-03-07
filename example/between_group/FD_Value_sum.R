@@ -68,6 +68,6 @@ FD_pval <- function(df) {
   pval_t <- data.frame(pval = c(pval1, pval2),group = c('asym', 'sym'))
 }
 
-fdpval <- rbind(FD_pval(trk_FD_CST), FD_pval(trk_FD_CING), 
+fdpval <- rbind(FD_pval(trk_FD_CING), FD_pval(trk_FD_CST), 
                FD_pval(trk_FD_UNC))
-fdpval$From = rep(c('CING', 'CST', 'UNC'), c(3, 3, 3))
+fdpval$From = rep(c('CING', 'CST', 'UNC'), c(2, 2, 2))

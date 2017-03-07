@@ -56,10 +56,9 @@ get_breaks <- function(models, thresh=0.05){
   df <- models$tTable
   sig  = df$p.value < thresh
   dsig = c(diff(sig), 0)
-  if(1){
+  if(subset(models$anova, Term=="Point:Hemisphere")$p.value < thresh){
     onpts  = df$Point[dsig==1]  + 0.5
     offpts = df$Point[dsig==-1] + 0.5
-    
     # Check for any unclosed segments
     if(dsig[which(dsig != 0)[1]] == -1) {
       onpts = c(1, onpts)
