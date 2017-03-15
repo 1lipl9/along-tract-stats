@@ -1,10 +1,13 @@
+# before run this script, you should run 
 library(tidyr)
 library(plyr)
 library(dplyr)
 library(coin)
-library(atlasBasedFiberAnalysis)
 
 #
+FDcalc <- function(df1, df2) {
+  FDvalue <- sum(abs(df1$FA-df2$FA))/nrow(df1)
+}
 addCol <- function(df) {
   subj <- as.character(df$V1[1])
   eleList <- strsplit(subj, '_')
@@ -36,6 +39,7 @@ trk_FD_for_each_trk <- function(filename, trk_trk) {
   
   trk_FD <- rbind(trk_subj_FD, trk_atlas_FD)
   trk_FD$From <- factor(trk_FD$From, levels = c('asym', 'sym', 'subj'))
+  # trk_FD$From <- factor(trk_FD$From)
   trk_FD
 }
 filenames <- choose.files(getwd(), 'choose the file containing the FA value.')

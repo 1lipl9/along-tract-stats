@@ -88,23 +88,10 @@ trk_CST <- filter(trk_data_FD, Tract == 'CST')
 trk_CING <- filter(trk_data_FD, Tract == 'CING')
 trk_UNC <- filter(trk_data_FD, Tract == 'UNC')
 
-#plot FD contrast figure.
-# boxplotfunc <- function(dat) {
-#   boxp <- ggplot(aes(x = From, y = FD), data = dat)
-#   boxp <- boxp + geom_boxplot() + ylim(0, 0.2) + theme_bw()
-#   boxp
-# }
-# boxp1 <- boxplotfunc(trk_CST) + theme(axis.title.x = element_blank(), 
-#                                       axis.text = element_text(size = 12))
-# boxp2 <- boxplotfunc(trk_CING) + theme(axis.title.x = element_blank(), 
-#                                        axis.text = element_text(size = 12))
-# boxp3 <- boxplotfunc(trk_UNC) + theme(axis.title.x = element_blank(), 
-#                                       axis.text = element_text(size = 12))
-
-boxp <- ggplot(aes(x = From, y = FD), data = trk_data_FD)
-boxp <- boxp + geom_boxplot() + ylim(0, 0.18) + theme_bw() + 
-  theme(axis.title.x = element_blank(), axis.text = element_text(size = 12)) + 
-  facet_grid(.~Tract)
+# boxp <- ggplot(aes(x = From, y = FD), data = trk_data_FD)
+# boxp <- boxp + geom_boxplot() + ylim(0, 0.18) + theme_bw() + 
+#   theme(axis.title.x = element_blank(), axis.text = element_text(size = 12)) + 
+#   facet_grid(.~Tract)
 
 
 

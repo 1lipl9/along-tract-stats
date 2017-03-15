@@ -1,33 +1,60 @@
-exptDir = choose.dir(getwd(), 'select a health dir..')
-thresh  = 0.01
-nPerms  = 100
+# This script is used to analyze the real tracts.
 
 library(nlme)         # Mixed-effects models
 library(ggplot2)      # Plotting tools
 library(plyr)         # Data manipulation
 library(RColorBrewer) # Color tables
 library(dplyr)
+library(tidyr)
 library(reshape2)
 library(gridExtra)
+
+thresh  = 0.01
+nPerms  = 100
+
+addCol <- function(df) {
+  subj <- as.character(df$V1[1])
+  eleList <- strsplit(subj, '_')
+  ID <- eleList[[1]][3]
+  Hemisphere <- eleList[[1]][2]
+  Tract <- eleList[[1]][1]
+  df$Point <- 1:nrow(df)
+  df$ID <- rep(ID, nrow(df))
+  df$Tract <- rep(Tract, nrow(df))
+  df$Hemisphere <- rep(Hemisphere, nrow(df))
+  df
+}
+calcFD <- function(df) {
+  df_L <- filter(df, Hemisphere == 'L')
+  df_R <- filter(df, Hemisphere == 'R')
+  FDcalc(df_L, df_R)
+}
+
+FDcalc <- function(df1, df2) {
+  FDvalue <- sum(abs(df1$FA-df2$FA))/nrow(df1)
+}
+
 ################################################################################
 # Import and format data
 # Read in demographics
 # Identify the unormal side
 
 # Read in whole-track properties (ex: streamlines) and merge with demographics
-trk_props_long = read.table(file.path(exptDir, 'trk_props_long.txt'), header=T)
-
-# Read in length-parameterized track data (ex: FA) and merge with demographics
-trk_data              = read.table(file.path(exptDir, 'trk_data.txt'),  header=T)
-trk_data$Point        = factor(trk_data$Point)
-trk_data[trk_data==0] = NA
-trk_data              = merge(trk_data, trk_props_long)
+filename <- choose.files()
+FADt <- read.table(filename, sep = '\t')
+df <- gather(FADt, 'Point', 'FA', 2:ncol(FADt))
+trk_data <- select(ddply(df, c('V1'), addCol), 
+                 c(ID, Tract, Hemisphere, Point, FA))
 # Add a Position column for easier plotting
 trk_data              = ddply(trk_data, c("Tract", "Hemisphere"),
                               transform, Position = 
                                 (as.numeric(Point)-1) * 100/(max(as.numeric(Point))-1))
 
-trk_data_select <- filter(trk_data, Tract == 'CST')
+trk_data_CST <- trk_data
+trk_data_CST$ID = factor(trk_data_CST$ID)
+trk_data_CST$Tract = factor(trk_data_CST$Tract)
+trk_data_CST$Point = factor(trk_data_CST$Point)
+trk_data_CST$Hemisphere = factor(trk_data_CST$Hemisphere)
 ################################################################################
 # Fit LME models
 # Overall ANOVA for Group and Point:Group effects
@@ -60,19 +87,16 @@ get_breaks <- function(models, thresh=0.05){
     onpts  = df$Point[dsig==1]  + 0.5
     offpts = df$Point[dsig==-1] + 0.5
     # Check for any unclosed segments
-    if(length(which(dsig != 0)) != 0 && dsig[which(dsig != 0)[1]] == -1) {
+    if(dsig[which(dsig != 0)[1]] == -1) {
       onpts = c(1, onpts)
     }
-    if(length(which(dsig != 0)) != 0 && dsig[rev(which(dsig != 0))[1]] == 1) {
+    if(dsig[rev(which(dsig != 0))[1]] == 1) {
       offpts = c(offpts, length(dsig))
     }
     
-    df <- data.frame(on = (onpts-1)  * 100/(length(df$Point)-1),
+    data.frame(on = (onpts-1)  * 100/(length(df$Point)-1),
                off = (offpts-1) * 100/(length(df$Point)-1))
-    if(nrow(df) == 0) {
-      df <- data.frame(on = 0, off = 0)
-    }
-  } else df <- data.frame(on=0, off=0)
+  } else data.frame(on=0, off=0)
 }
 
 groupAna <- function(df) {
@@ -84,10 +108,10 @@ lin_interp = function(x, spacing=0.01) {
 }
 ###############################################################################
 models = list()
-models$anova = fit_trk_model1(trk_data_select, 'Hemisphere')
-models$tTable = fit_trk_model2(trk_data_select, 'Hemisphere')
+models$anova = fit_trk_model1(trk_data_CST, 'Hemisphere')
+models$tTable = fit_trk_model2(trk_data_CST, 'Hemisphere')
 models$tTable = transform(models$tTable, Position = (as.numeric(Point)-1) * 
-                                100/(max(as.numeric(Point))-1))
+                            100/(max(as.numeric(Point))-1))
 # If the F-test across the Point:Group terms in a panel is significant, 
 #plot a bar at the bottom to indicate which pointwise t-tests are significant
 
@@ -97,7 +121,7 @@ break_list = get_breaks(models, thresh)
 #                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
 sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, ymin = 0, ymax = 1, alpha = 0.2)
 
-p1 <- ggplot(trk_data_select, aes(x = Position, y = FA)) + labs(y = 'FA')
+p1 <- ggplot(trk_data_CST, aes(x = Position, y = FA)) + labs(y = 'FA')
 p1 <- p1 + geom_line(aes(group = ID:Hemisphere, color = Hemisphere), alpha = 0.2) + 
   stat_summary(aes(group = Hemisphere, fill = Hemisphere, color = Hemisphere),
                fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() +
@@ -109,7 +133,7 @@ models$tTable.interp <- colfunc(models$tTable)
 
 
 sigFig = ggplot(data=models$tTable.interp, aes(x=Position, y=p.value, color=p.value < 0.05, 
-                                                       group=1)) + geom_line() + 
+                                               group=1)) + geom_line() + 
   xlab('Position along tract (%)') + scale_color_manual('p.value < 0.05', values=c('red', 'green'))
 
 # Gray out non-significant areas

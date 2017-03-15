@@ -54,7 +54,7 @@ readData <- function(exptDir) {
 
 # calculate asymmetry index (R - L)/(R + L)
 AIcalc <- function(df1, df2) {
-  AIvalue <- (df2$FA-df1$FA)/(df1$FA + df2$FA);
+  AIvalue <- (df1$FA-df2$FA)/(df1$FA + df2$FA);
 }
 
 # calculate the asymmetry index.

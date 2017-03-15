@@ -27,14 +27,15 @@ trk_data              = ddply(trk_data, c("Tract", "Hemisphere"),
                               transform, Position = 
                                 (as.numeric(Point)-1) * 100/(max(as.numeric(Point))-1))
 
-
+trk_data$ID <- factor(trk_data$ID, 
+                      labels = c('Asymmetric Template', 'Symmetric Template'))
 
 lin_interp = function(x, spacing=0.01) {
   approx(1:length(x), x, xout=seq(1,length(x), spacing))$y
 }
 
 p1 <- ggplot(trk_data, aes(x = Position, y = FA)) + labs(y = 'FA')
-p1 <- p1 + geom_line(aes(color = ID), size = 1.5) + 
+p1 <- p1 + geom_line(aes(color = Hemisphere), size = 1.5) + 
   theme_bw() +
   theme(axis.title = element_text(size = 12), axis.text = element_text(size = 12)) +
-  facet_grid(Hemisphere~Tract)
+  facet_grid(Tract~ID) + theme(strip.text = element_text(size = 12))
