@@ -88,23 +88,18 @@ fit_trk_model1 <- function(df, groupfac){
   lme.trk = lme(fmla, data=df, random = ~ 1 | ID, na.action=na.omit)
   data.frame(Term = rownames(anova(lme.trk)), anova(lme.trk))
 }
+oneway_test_pack <- function(df) {
+  ttvalue <- oneway.test(AI~From, df)
+  data.frame(Point = unique(df$Point), p.value = ttvalue$p.value)
+}
 # Fit a cell-means version to get effect sizes relative to controls
-fit_trk_model2 <- function(df, groupfac){
-  xnam <- c('Point', groupfac)
-  fmla <- as.formula(paste("AI ~", paste(xnam, collapse = '/'), ' - 1'))
-  lme.trk = tryCatch(lme(fmla, 
-                         data=df, random = ~ 1 | ID, na.action=na.omit), 
-                     error = function(e) data.frame())
-  if(length(lme.trk)!=0){
-    term.RE = paste('Point[0-9]+:', groupfac, '.+', sep='')
-    term.rows = grep(term.RE, row.names(summary(lme.trk)$tTable))
-    data.frame(Point = as.numeric(levels(factor(df$Point))),
-               summary(lme.trk)$tTable[term.rows,])
-  } else data.frame()
+fit_trk_model2 <- function(df){
+  ddply(df, 'Point', oneway_test_pack)
 }
 
 get_breaks <- function(models, thresh=0.05){
   df <- models$tTable
+  df$Point <- as.numeric(df$Point)
   sig  = df$p.value < thresh
   dsig = c(diff(sig), 0)
   if(subset(models$anova, Term=="Point:From")$p.value < thresh){
@@ -150,7 +145,7 @@ trk_data_AI <- rbind(trk_data_pat_AI_CST, trk_data_crl_AI_CST)
 trk_data_AI$From <- factor(trk_data_AI$From)
 models_pat = list()
 models_pat$anova = fit_trk_model1(trk_data_AI, 'From')
-models_pat$tTable = fit_trk_model2(trk_data_AI, 'From')
+models_pat$tTable = fit_trk_model2(trk_data_AI)
 models_pat$tTable = transform(models_pat$tTable, Position = (as.numeric(Point)-1) * 
                                 100/(max(as.numeric(Point))-1))
 # If the F-test across the Point:Group terms in a panel is significant, 
@@ -160,18 +155,16 @@ break_list = get_breaks(models_pat, thresh)
 
 # sig_bars   = geom_segment(aes(x=on, y=0.2, xend=off, yend=0.2, group=NULL, size=NULL), 
 #                           data=break_list, colour='black', arrow = arrow(length = unit(0.1,"cm")))
-sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, 
-                     ymin = -1, ymax = 1, alpha = 0.2)
+sig_rect <- annotate('rect', xmin = break_list$on, xmax = break_list$off, ymin = -0.6, ymax = 0.6, alpha = 0.2)
 
 p_pat <- ggplot(trk_data_AI, aes(x = Position, y = AI))
 p_pat <- p_pat + geom_line(aes(group = ID:From, color = From), alpha = 0.2) + 
   stat_summary(aes(group = From, fill = From, color = From),
                fun.data = groupAna, geom = 'smooth', alpha = 0.3) + sig_rect + theme_bw() +
   theme(axis.title = element_text(size = 12), axis.text = element_text(size = 12)) + 
-  ylab('Asymmetry Index') + ylim(-1, 1)
+  ylab('Asymmetry Index')
 
-colfunc <- colwise(lin_interp, c('Point','t.value', 'p.value', 
-                                 'Position'))
+colfunc <- colwise(lin_interp, c('Point', 'p.value', 'Position'))
 models_pat$tTable.interp <- colfunc(models_pat$tTable)
 
 

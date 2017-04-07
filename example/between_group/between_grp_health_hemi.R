@@ -72,6 +72,7 @@ get_breaks <- function(models, thresh=0.05){
     if(nrow(df) == 0) {
       df <- data.frame(on = 0, off = 0)
     }
+    df
   } else df <- data.frame(on=0, off=0)
 }
 
@@ -118,7 +119,7 @@ grayout_p = annotate('rect', xmin=0, xmax=100, ymin=0.05, ymax=1, alpha=0.25)
 # Make final plot
 p_sig <- sigFig + grayout_p + scale_y_log10(limits=c(0.00001, 1), breaks=c(0.001, 0.01, 0.1, 1)) + theme_bw()
 
-pval <- models$tTable$t.value
+pval <- models$tTable$p.value
 Filename2W <- paste0(format(Sys.time(), '%m_%d_%H_%M_%S'), '.csv')
-write.table(pval, file = Filename2W, sep = ',', row.names = F)
+write.table(-log10(pval), file = Filename2W, sep = ',', row.names = F)
 # write.table(models$anova, file = 'rd_anova.csv', sep = ',')

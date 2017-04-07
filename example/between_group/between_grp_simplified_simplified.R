@@ -62,24 +62,32 @@ trk_data_asym <- readData(exptDir2)
 trk_data_sym_FD  <- ddply(trk_data_sym, c('ID', 'Tract'), df_FD_calc)
 trk_data_asym_FD <- ddply(trk_data_asym, c('ID', 'Tract'), df_FD_calc)
 
-p1 <- ggplot(aes(x = Position, y = FA), data = trk_data_sym)
-p1 <- p1 + geom_line(aes(group = ID), alpha = 0.2) + facet_grid(Tract~Hemisphere) + ylim(0, 1) +
-  stat_summary(aes(group = 1), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
+# p1 <- ggplot(aes(x = Position, y = FA), data = trk_data_sym)
+# p1 <- p1 + geom_line(aes(group = ID), alpha = 0.2) + facet_grid(Tract~Hemisphere) + ylim(0, 1) +
+#   stat_summary(aes(group = 1), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
+# 
+# p2 <- ggplot(aes(x = Position, y = FA), data = trk_data_asym)
+# p2 <- p2 + geom_line(aes(group = ID), alpha = 0.2) + facet_grid(Tract~Hemisphere) + ylim(0, 1) +
+#   stat_summary(aes(group = 1), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
+# 
+# grid.arrange(p1, p2, ncol = 2)
 
-p2 <- ggplot(aes(x = Position, y = FA), data = trk_data_asym)
-p2 <- p2 + geom_line(aes(group = ID), alpha = 0.2) + facet_grid(Tract~Hemisphere) + ylim(0, 1) +
-  stat_summary(aes(group = 1), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
+trk_data <- rbind(trk_data_sym, trk_data_asym)
+trk_data$From <- factor(rep(c('Sym', 'Asym'), c(nrow(trk_data_sym), nrow(trk_data_asym))))
+p_tot <- ggplot(aes(x = Position, y = FA), data = trk_data)
+ p_tot <- p_tot + geom_line(aes(group = ID:Hemisphere, color = Hemisphere), alpha = 0.2) + 
+   facet_grid(Tract~From) + ylim(0, 1) +
+   stat_summary(aes(color = Hemisphere, fill = Hemisphere), fun.data = groupStat, geom = 'smooth', alpha = 0.2) + theme_bw()
 
-grid.arrange(p1, p2, ncol = 2)
 
-trk_data_sym_FD$From <- rep('sym', nrow(trk_data_sym_FD))
-trk_data_asym_FD$From <- rep('asym', nrow(trk_data_asym_FD))
+trk_data_sym_FD$From <- rep('Sym', nrow(trk_data_sym_FD))
+trk_data_asym_FD$From <- rep('Asym', nrow(trk_data_asym_FD))
 
 trk_data_FD <- rbind(trk_data_sym_FD, trk_data_asym_FD)
 trk_data_FD$From <- factor(trk_data_FD$From)
 
 pTtest <- function(df) {
-  t.test(filter(df, From == 'sym')$FD, filter(df, From == 'asym')$FD, paired = T)
+  t.test(filter(df, From == 'Sym')$FD, filter(df, From == 'Asym')$FD, paired = T)
 }
 
 tResult <- dlply(trk_data_FD, c('Tract'), pTtest)
@@ -88,10 +96,12 @@ trk_CST <- filter(trk_data_FD, Tract == 'CST')
 trk_CING <- filter(trk_data_FD, Tract == 'CING')
 trk_UNC <- filter(trk_data_FD, Tract == 'UNC')
 
-# boxp <- ggplot(aes(x = From, y = FD), data = trk_data_FD)
-# boxp <- boxp + geom_boxplot() + ylim(0, 0.18) + theme_bw() + 
-#   theme(axis.title.x = element_blank(), axis.text = element_text(size = 12)) + 
-#   facet_grid(.~Tract)
+p_boxplot <- ggplot(aes(x = From, y = FD), data = trk_data_FD)
+p_boxplot <- p_boxplot + geom_boxplot() +
+  xlab('') + ylab('Functional Difference') + theme_bw() +
+  theme(axis.text = element_text(size = 12),
+        axis.title.y = element_text(size = 12)) + ylim(0, 0.2) + 
+  facet_grid(.~Tract)
 
 
 
